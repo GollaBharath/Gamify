@@ -1,0 +1,241 @@
+RBAC Express Sample
+Files combined into single file for quick copy-paste.
+Includes:
+ - Express server
+ - Mongoose models (User, Workspace, Activity)
+ - JWT auth + bcrypt password hashing
+ - Role-based middleware (RBAC)
+ - Routes: register, login, assign-role, invite, create-workspace, list-users, activity-log
+Setup:
+ 1. npm init -y
+ 2. npm i express mongoose jsonwebtoken bcryptjs body-parser dotenv
+ 3. Create a .env file with MONGO_URI and JWT_SECRET
+ 4. node rbac-express-sample.js
+
+This is a minimal example for demonstration & learning only.
+
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+
+const app = express();
+app.use(bodyParser.json());
+
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'devsecret';
+
+// --- Mongoose models ---
+const { Schema } = mongoose;
+
+const UserSchema = new Schema({
+  email: { type: String, unique: true, required: true },
+  name: String,
+  passwordHash: String,
+  roles: [{ type: String }], // e.g. ['Admin','Moderator','Member']
+  invitedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+UserSchema.methods.checkPassword = function (password) {
+  return bcrypt.compare(password, this.passwordHash);
+};
+
+const WorkspaceSchema = new Schema({
+  name: String,
+  owner: { type: Schema.Types.ObjectId, ref: 'User' },
+  members: [{ user: { type: Schema.Types.ObjectId, ref: 'User' }, role: String }],
+  createdAt: { type: Date, default: Date.now }
+});
+
+const ActivitySchema = new Schema({
+  actor: { type: Schema.Types.ObjectId, ref: 'User' },
+  action: String,
+  targetType: String,
+  targetId: Schema.Types.Mixed,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const InviteSchema = new Schema({
+  token: String,
+  email: String,
+  role: String,
+  invitedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  used: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  expiresAt: Date
+});
+
+const User = mongoose.model('User', UserSchema);
+const Workspace = mongoose.model('Workspace', WorkspaceSchema);
+const Activity = mongoose.model('Activity', ActivitySchema);
+const Invite = mongoose.model('Invite', InviteSchema);
+
+// --- Utility & Middleware ---
+async function emitActivity(actorId, action, targetType = null, targetId = null) {
+  const a = new Activity({ actor: actorId, action, targetType, targetId });
+  await a.save();
+}
+
+function requireAuth(req, res, next) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ error: 'Missing token' });
+  const token = auth.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.user = payload; // { id, email, roles }
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+function requireRole(...allowedRoles) {
+  return (req, res, next) => {
+    const userRoles = (req.user && req.user.roles) || [];
+    const ok = allowedRoles.some(r => userRoles.includes(r));
+    if (!ok) return res.status(403).json({ error: 'Forbidden: role required' });
+    next();
+  };
+}
+
+// --- Routes ---
+// Health
+app.get('/ping', (req, res) => res.json({ ok: true, time: new Date() }));
+
+// Register (from invite or open)
+app.post('/register', async (req, res) => {
+  const { email, name, password, inviteToken } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'email+password required' });
+
+  // If using invite token, validate
+  let roles = ['Member'];
+  let invitedBy = null;
+  if (inviteToken) {
+    const inv = await Invite.findOne({ token: inviteToken, used: false });
+    if (!inv) return res.status(400).json({ error: 'Invalid or used invite token' });
+    if (inv.expiresAt && inv.expiresAt < new Date()) return res.status(400).json({ error: 'Invite expired' });
+    roles = [inv.role || 'Member'];
+    invitedBy = inv.invitedBy;
+    inv.used = true;
+    await inv.save();
+  }
+
+  const passHash = await bcrypt.hash(password, 10);
+  try {
+    const u = new User({ email, name, passwordHash: passHash, roles, invitedBy });
+    await u.save();
+    await emitActivity(u._id, 'Registered', 'User', u._id);
+    return res.json({ ok: true, id: u._id });
+  } catch (err) {
+    return res.status(400).json({ error: 'email may already exist', details: err.message });
+  }
+});
+
+// Login
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'email+password required' });
+  const u = await User.findOne({ email });
+  if (!u) return res.status(400).json({ error: 'invalid credentials' });
+  const ok = await u.checkPassword(password);
+  if (!ok) return res.status(400).json({ error: 'invalid credentials' });
+  const token = jwt.sign({ id: u._id, email: u.email, roles: u.roles }, JWT_SECRET, { expiresIn: '7d' });
+  await emitActivity(u._id, 'Logged in');
+  res.json({ token });
+});
+
+// Admin: assign role to user
+app.post('/assign-role', requireAuth, requireRole('Admin'), async (req, res) => {
+  const { userId, role } = req.body;
+  if (!userId || !role) return res.status(400).json({ error: 'userId and role required' });
+  const u = await User.findById(userId);
+  if (!u) return res.status(404).json({ error: 'user not found' });
+  if (!u.roles.includes(role)) u.roles.push(role);
+  await u.save();
+  await emitActivity(req.user.id, `Assigned role ${role} to ${u.email}`, 'User', u._id);
+  res.json({ ok: true, roles: u.roles });
+});
+
+// Admin: create invite link
+app.post('/invite', requireAuth, requireRole('Admin','Moderator'), async (req, res) => {
+  const { email, role = 'Member', expiresInHours = 72 } = req.body;
+  if (!email) return res.status(400).json({ error: 'email required' });
+  const token = crypto.randomBytes(20).toString('hex');
+  const inv = new Invite({ token, email, role, invitedBy: req.user.id, expiresAt: new Date(Date.now() + expiresInHours * 3600 * 1000) });
+  await inv.save();
+  await emitActivity(req.user.id, `Created invite for ${email} as ${role}`, 'Invite', inv._id);
+  // In real app you'd send email. We'll return token in response for demo.
+  res.json({ ok: true, inviteToken: token, expiresAt: inv.expiresAt });
+});
+
+// Create workspace (Admin or Member)
+app.post('/workspaces', requireAuth, requireRole('Admin','Member'), async (req, res) => {
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name required' });
+  const ws = new Workspace({ name, owner: req.user.id, members: [{ user: req.user.id, role: 'Admin' }] });
+  await ws.save();
+  await emitActivity(req.user.id, `Created workspace ${name}`, 'Workspace', ws._id);
+  res.json({ ok: true, workspace: ws });
+});
+
+// Add member to workspace (Admin only on workspace)
+app.post('/workspaces/:id/add-member', requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const { userId, role = 'Member' } = req.body;
+  const ws = await Workspace.findById(id);
+  if (!ws) return res.status(404).json({ error: 'workspace not found' });
+  // Check if requester is workspace admin
+  const isAdmin = ws.members.some(m => m.user.toString() === req.user.id && m.role === 'Admin');
+  if (!isAdmin) return res.status(403).json({ error: 'Only workspace Admins can add members' });
+  if (ws.members.some(m => m.user.toString() === userId)) return res.status(400).json({ error: 'Already a member' });
+  ws.members.push({ user: userId, role });
+  await ws.save();
+  await emitActivity(req.user.id, `Added ${userId} to workspace ${id} as ${role}`, 'Workspace', ws._id);
+  res.json({ ok: true, workspace: ws });
+});
+
+// List users (Admin only)
+app.get('/users', requireAuth, requireRole('Admin'), async (req, res) => {
+  const users = await User.find().select('-passwordHash');
+  res.json({ users });
+});
+
+// Activity logs (Admins only)
+app.get('/activities', requireAuth, requireRole('Admin'), async (req, res) => {
+  const logs = await Activity.find().populate('actor', 'email name').sort({ createdAt: -1 }).limit(200);
+  res.json({ logs });
+});
+
+// Start server & connect DB
+async function start() {
+  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/rbac_demo';
+  await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  console.log('Connected to MongoDB');
+  // Create a default admin if none exists (for demo)
+  const admin = await User.findOne({ roles: 'Admin' });
+  if (!admin) {
+    const pass = 'admin123';
+    const passHash = await bcrypt.hash(pass, 10);
+    const a = new User({ email: 'admin@example.com', name: 'Admin', passwordHash: passHash, roles: ['Admin'] });
+    await a.save();
+    console.log('Created default admin -> admin@example.com / admin123');
+  }
+  app.listen(PORT, () => console.log('Server listening on', PORT));
+}
+
+start().catch(err => {
+  console.error('Failed to start', err);
+  process.exit(1);
+});
+
+/*
+Notes & next steps:
+- Replace in-memory JWT secret + plain invite token return with emailed invites in production.
+- Add validation, rate-limiting, logging, and tests.
+- Implement more granular permissions (resource-based) rather than role strings.
+- UI: build an admin panel to manage roles & workspaces. Consider using React + Tailwind.
+*/
