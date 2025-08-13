@@ -1,0 +1,542 @@
+This PR implements a fully functional backend for role-based collaboration supporting:
+Shared Workspaces with member management
+Granular permissions for CRUD actions
+Activity Logs for auditing
+JWT Authentication
+MongoDB storage
+// =============================
+// package.json
+// =============================
+{
+  "name": "role-based-collab-starter",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --env-file=.env --watch src/server.js",
+    "start": "node --env-file=.env src/server.js",
+    "seed": "node --env-file=.env scripts/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.1",
+    "morgan": "^1.10.0"
+  }
+}
+
+// =============================
+// .env (create this file in project root)
+// =============================
+// MONGO_URI=mongodb://localhost:27017/collab
+// JWT_SECRET=supersecretkey
+// PORT=4000
+
+// =============================
+// src/config.js
+// =============================
+import dotenv from 'dotenv';
+dotenv.config();
+export const config = {
+  mongoUri: process.env.MONGO_URI || 'mongodb://localhost:27017/collab',
+  jwtSecret: process.env.JWT_SECRET || 'change-me',
+  port: process.env.PORT || 4000,
+};
+
+// =============================
+// src/db.js
+// =============================
+import mongoose from 'mongoose';
+import { config } from './config.js';
+export async function connectDB() {
+  await mongoose.connect(config.mongoUri, { dbName: 'collab' });
+  console.log('🗄️  MongoDB connected');
+}
+
+// =============================
+// src/utils/permissions.js
+// =============================
+export const Roles = Object.freeze({
+  ADMIN: 'admin',
+  MODERATOR: 'moderator',
+  MEMBER: 'member',
+  GUEST: 'guest',
+});
+
+export const Permissions = Object.freeze({
+  WORKSPACE_CREATE: 'workspace:create',
+  WORKSPACE_UPDATE: 'workspace:update',
+  WORKSPACE_DELETE: 'workspace:delete',
+  WORKSPACE_INVITE: 'workspace:invite',
+  WORKSPACE_REMOVE_MEMBER: 'workspace:remove_member',
+  ITEM_CREATE: 'item:create',
+  ITEM_UPDATE: 'item:update',
+  ITEM_DELETE: 'item:delete',
+  ROLE_MANAGE: 'role:manage',
+  AUDIT_READ: 'audit:read',
+});
+
+// Default RBAC matrix (can be extended per-workspace)
+export const ROLE_PERMISSIONS = {
+  [Roles.ADMIN]: [
+    Permissions.WORKSPACE_CREATE,
+    Permissions.WORKSPACE_UPDATE,
+    Permissions.WORKSPACE_DELETE,
+    Permissions.WORKSPACE_INVITE,
+    Permissions.WORKSPACE_REMOVE_MEMBER,
+    Permissions.ITEM_CREATE,
+    Permissions.ITEM_UPDATE,
+    Permissions.ITEM_DELETE,
+    Permissions.ROLE_MANAGE,
+    Permissions.AUDIT_READ,
+  ],
+  [Roles.MODERATOR]: [
+    Permissions.WORKSPACE_UPDATE,
+    Permissions.WORKSPACE_INVITE,
+    Permissions.WORKSPACE_REMOVE_MEMBER,
+    Permissions.ITEM_CREATE,
+    Permissions.ITEM_UPDATE,
+    Permissions.ITEM_DELETE,
+    Permissions.AUDIT_READ,
+  ],
+  [Roles.MEMBER]: [
+    Permissions.ITEM_CREATE,
+    Permissions.ITEM_UPDATE,
+    Permissions.AUDIT_READ,
+  ],
+  [Roles.GUEST]: [Permissions.AUDIT_READ],
+};
+
+export function can(role, permission) {
+  return ROLE_PERMISSIONS[role]?.includes(permission) || false;
+}
+
+// =============================
+// src/models/User.js
+// =============================
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const userSchema = new mongoose.Schema(
+  {
+    email: { type: String, unique: true, required: true },
+    name: { type: String, required: true },
+    passwordHash: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+userSchema.methods.setPassword = async function (password) {
+  this.passwordHash = await bcrypt.hash(password, 10);
+};
+
+userSchema.methods.validatePassword = async function (password) {
+  return bcrypt.compare(password, this.passwordHash);
+};
+
+export const User = mongoose.model('User', userSchema);
+
+// =============================
+// src/models/Workspace.js
+// =============================
+import mongoose from 'mongoose';
+import { Roles } from '../utils/permissions.js';
+
+const memberSchema = new mongoose.Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    role: { type: String, enum: Object.values(Roles), default: Roles.MEMBER },
+  },
+  { _id: false }
+);
+
+const itemSchema = new mongoose.Schema(
+  {
+    title: String,
+    content: String,
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  },
+  { timestamps: true }
+);
+
+const workspaceSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    description: String,
+    members: [memberSchema],
+    items: [itemSchema],
+  },
+  { timestamps: true }
+);
+
+export const Workspace = mongoose.model('Workspace', workspaceSchema);
+
+// =============================
+// src/models/Activity.js
+// =============================
+import mongoose from 'mongoose';
+
+const activitySchema = new mongoose.Schema(
+  {
+    actor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    action: { type: String, required: true }, // e.g., "workspace:create", "item:update"
+    targetType: { type: String }, // Workspace | Item | User
+    targetId: { type: String },
+    workspace: { type: mongoose.Schema.Types.ObjectId, ref: 'Workspace' },
+    meta: {},
+  },
+  { timestamps: true }
+);
+
+export const Activity = mongoose.model('Activity', activitySchema);
+
+// =============================
+// src/middleware/auth.js
+// =============================
+import jwt from 'jsonwebtoken';
+import { config } from '../config.js';
+import { User } from '../models/User.js';
+
+export async function auth(req, res, next) {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token) return res.status(401).json({ error: 'Missing token' });
+    const payload = jwt.verify(token, config.jwtSecret);
+    const user = await User.findById(payload.sub);
+    if (!user) return res.status(401).json({ error: 'Invalid token' });
+    req.user = user;
+    next();
+  } catch (e) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+}
+
+export function sign(user) {
+  return jwt.sign({ sub: user._id, email: user.email }, config.jwtSecret, {
+    expiresIn: '7d',
+  });
+}
+
+// =============================
+// src/middleware/authorize.js
+// =============================
+import { can } from '../utils/permissions.js';
+import { Workspace } from '../models/Workspace.js';
+
+export function requirePermission(permission) {
+  return async function (req, res, next) {
+    try {
+      const wsId = req.params.workspaceId || req.body.workspaceId || req.query.workspaceId;
+      if (!wsId) return res.status(400).json({ error: 'workspaceId required' });
+      const ws = await Workspace.findById(wsId).populate('members.user');
+      if (!ws) return res.status(404).json({ error: 'Workspace not found' });
+      req.workspace = ws;
+      const member = ws.members.find((m) => m.user._id.equals(req.user._id));
+      const role = member?.role || 'guest';
+      if (!can(role, permission)) return res.status(403).json({ error: 'Forbidden' });
+      next();
+    } catch (e) {
+      next(e);
+    }
+  };
+}
+
+// =============================
+// src/utils/audit.js
+// =============================
+import { Activity } from '../models/Activity.js';
+export async function recordActivity({ actor, action, targetType, targetId, workspace, meta }) {
+  return Activity.create({ actor, action, targetType, targetId, workspace, meta });
+}
+
+// =============================
+// src/routes/auth.js
+// =============================
+import { Router } from 'express';
+import { User } from '../models/User.js';
+import { sign } from '../middleware/auth.js';
+
+export const authRouter = Router();
+
+authRouter.post('/register', async (req, res) => {
+  const { email, name, password } = req.body;
+  if (!email || !name || !password) return res.status(400).json({ error: 'Missing fields' });
+  const existing = await User.findOne({ email });
+  if (existing) return res.status(409).json({ error: 'Email already registered' });
+  const user = new User({ email, name, passwordHash: '' });
+  await user.setPassword(password);
+  await user.save();
+  return res.json({ token: sign(user), user: { id: user._id, email, name } });
+});
+
+authRouter.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user || !(await user.validatePassword(password))) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+  return res.json({ token: sign(user), user: { id: user._id, email: user.email, name: user.name } });
+});
+
+// =============================
+// src/routes/workspaces.js
+// =============================
+import { Router } from 'express';
+import { Workspace } from '../models/Workspace.js';
+import { Roles, Permissions } from '../utils/permissions.js';
+import { recordActivity } from '../utils/audit.js';
+import { requirePermission } from '../middleware/authorize.js';
+
+export const wsRouter = Router();
+
+// Create workspace (requires workspace:create globally — here we allow any authenticated user)
+wsRouter.post('/', async (req, res, next) => {
+  try {
+    const { name, description } = req.body;
+    const ws = await Workspace.create({
+      name,
+      description,
+      members: [{ user: req.user._id, role: Roles.ADMIN }],
+    });
+    await recordActivity({ actor: req.user._id, action: 'workspace:create', targetType: 'Workspace', targetId: ws._id, workspace: ws._id });
+    res.status(201).json(ws);
+  } catch (e) { next(e); }
+});
+
+// Invite member
+wsRouter.post('/:workspaceId/invite', requirePermission(Permissions.WORKSPACE_INVITE), async (req, res, next) => {
+  try {
+    const { email, role = Roles.MEMBER } = req.body;
+    const ws = req.workspace;
+    const { User } = await import('../models/User.js');
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const exists = ws.members.some((m) => m.user.equals(user._id));
+    if (exists) return res.status(409).json({ error: 'Already a member' });
+    ws.members.push({ user: user._id, role });
+    await ws.save();
+    await recordActivity({ actor: req.user._id, action: 'workspace:invite', targetType: 'User', targetId: user._id, workspace: ws._id, meta: { role } });
+    res.json(ws);
+  } catch (e) { next(e); }
+});
+
+// Remove member
+wsRouter.post('/:workspaceId/remove', requirePermission(Permissions.WORKSPACE_REMOVE_MEMBER), async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    const ws = req.workspace;
+    ws.members = ws.members.filter((m) => !m.user.equals(userId));
+    await ws.save();
+    await recordActivity({ actor: req.user._id, action: 'workspace:remove_member', targetType: 'User', targetId: userId, workspace: ws._id });
+    res.json(ws);
+  } catch (e) { next(e); }
+});
+
+// Update workspace metadata
+wsRouter.patch('/:workspaceId', requirePermission(Permissions.WORKSPACE_UPDATE), async (req, res, next) => {
+  try {
+    const ws = req.workspace;
+    const { name, description } = req.body;
+    if (name) ws.name = name;
+    if (description) ws.description = description;
+    await ws.save();
+    await recordActivity({ actor: req.user._id, action: 'workspace:update', targetType: 'Workspace', targetId: ws._id, workspace: ws._id });
+    res.json(ws);
+  } catch (e) { next(e); }
+});
+
+// Delete workspace
+wsRouter.delete('/:workspaceId', requirePermission(Permissions.WORKSPACE_DELETE), async (req, res, next) => {
+  try {
+    const ws = req.workspace;
+    await ws.deleteOne();
+    await recordActivity({ actor: req.user._id, action: 'workspace:delete', targetType: 'Workspace', targetId: ws._id, workspace: ws._id });
+    res.json({ ok: true });
+  } catch (e) { next(e); }
+});
+
+// Create item in workspace
+wsRouter.post('/:workspaceId/items', requirePermission(Permissions.ITEM_CREATE), async (req, res, next) => {
+  try {
+    const ws = req.workspace;
+    const item = { title: req.body.title, content: req.body.content, createdBy: req.user._id };
+    ws.items.push(item);
+    await ws.save();
+    const created = ws.items[ws.items.length - 1];
+    await recordActivity({ actor: req.user._id, action: 'item:create', targetType: 'Item', targetId: created._id, workspace: ws._id });
+    res.status(201).json(created);
+  } catch (e) { next(e); }
+});
+
+// Update item
+wsRouter.patch('/:workspaceId/items/:itemId', requirePermission(Permissions.ITEM_UPDATE), async (req, res, next) => {
+  try {
+    const ws = req.workspace;
+    const item = ws.items.id(req.params.itemId);
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+    if (req.body.title) item.title = req.body.title;
+    if (req.body.content) item.content = req.body.content;
+    await ws.save();
+    await recordActivity({ actor: req.user._id, action: 'item:update', targetType: 'Item', targetId: item._id, workspace: ws._id });
+    res.json(item);
+  } catch (e) { next(e); }
+});
+
+// Delete item
+wsRouter.delete('/:workspaceId/items/:itemId', requirePermission(Permissions.ITEM_DELETE), async (req, res, next) => {
+  try {
+    const ws = req.workspace;
+    const item = ws.items.id(req.params.itemId);
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+    item.deleteOne();
+    await ws.save();
+    await recordActivity({ actor: req.user._id, action: 'item:delete', targetType: 'Item', targetId: req.params.itemId, workspace: ws._id });
+    res.json({ ok: true });
+  } catch (e) { next(e); }
+});
+
+// List workspaces for current user
+wsRouter.get('/', async (req, res, next) => {
+  try {
+    const workspaces = await Workspace.find({ 'members.user': req.user._id });
+    res.json(workspaces);
+  } catch (e) { next(e); }
+});
+
+// =============================
+// src/routes/activity.js
+// =============================
+import { Router } from 'express';
+import { Activity } from '../models/Activity.js';
+
+export const activityRouter = Router();
+
+activityRouter.get('/', async (req, res, next) => {
+  try {
+    const { workspaceId, limit = 50 } = req.query;
+    const query = workspaceId ? { workspace: workspaceId } : {};
+    const items = await Activity.find(query)
+      .populate('actor', 'name email')
+      .sort({ createdAt: -1 })
+      .limit(Number(limit));
+    res.json(items);
+  } catch (e) { next(e); }
+});
+
+// =============================
+// src/server.js
+// =============================
+import express from 'express';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import cors from 'cors';
+import { connectDB } from './db.js';
+import { config } from './config.js';
+import { auth } from './middleware/auth.js';
+import { authRouter } from './routes/auth.js';
+import { wsRouter } from './routes/workspaces.js';
+import { activityRouter } from './routes/activity.js';
+
+const app = express();
+app.use(cors());
+app.use(helmet());
+app.use(express.json());
+app.use(morgan('dev'));
+
+app.get('/', (_req, res) => {
+  res.json({ ok: true, service: 'Role-based Collaboration API' });
+});
+
+app.use('/api/auth', authRouter);
+app.use('/api/workspaces', auth, wsRouter);
+app.use('/api/activity', auth, activityRouter);
+
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
+connectDB().then(() => {
+  app.listen(config.port, () => console.log(`🚀 API running on http://localhost:${config.port}`));
+});
+
+// =============================
+// scripts/seed.js
+// =============================
+import { connectDB } from '../src/db.js';
+import { User } from '../src/models/User.js';
+
+await connectDB();
+
+const ensureUser = async (email, name, password) => {
+  let u = await User.findOne({ email });
+  if (!u) {
+    u = new User({ email, name, passwordHash: '' });
+    await u.setPassword(password);
+    await u.save();
+    console.log('Created user', email);
+  } else {
+    console.log('Existing user', email);
+  }
+  return u;
+};
+
+await ensureUser('admin@example.com', 'Admin', 'admin123');
+await ensureUser('mod@example.com', 'Moderator', 'mod12345');
+await ensureUser('member@example.com', 'Member', 'member123');
+await ensureUser('guest@example.com', 'Guest', 'guest123');
+
+console.log('✅ Seed complete');
+process.exit(0);
+
+// =============================
+// requests.http (Optional: VSCode REST Client examples)
+// =============================
+// @host = http://localhost:4000
+//
+// ### Register
+// POST {{host}}/api/auth/register
+// Content-Type: application/json
+//
+// {
+//   "email": "you@example.com",
+//   "name": "You",
+//   "password": "password123"
+// }
+//
+// ### Login
+// POST {{host}}/api/auth/login
+// Content-Type: application/json
+//
+// {
+//   "email": "admin@example.com",
+//   "password": "admin123"
+// }
+//
+// ### Create Workspace
+// POST {{host}}/api/workspaces
+// Authorization: Bearer {{token}}
+// Content-Type: application/json
+//
+// {
+//   "name": "Core Team",
+//   "description": "Main workspace"
+// }
+//
+// ### Invite Member
+// POST {{host}}/api/workspaces/{{workspaceId}}/invite
+// Authorization: Bearer {{token}}
+// Content-Type: application/json
+//
+// {
+//   "email": "member@example.com",
+//   "role": "member"
+// }
+//
+// ### List Activity (Audit Log)
+// GET {{host}}/api/activity?workspaceId={{workspaceId}}&limit=25
+// Authorization: Bearer {{token}}
