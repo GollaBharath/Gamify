@@ -2,7 +2,7 @@ import React from 'react'
 
 function App() {
   return (
-    <div> WELCOME TO GAMIFY APPLICATION </div>
+    <div> WELCOME TO GAMIFYy APPLICATION </div>
   )
 }
 
