@@ -1,4 +1,3 @@
-
 # 🤝 Contributing to Gamify
 
 Thank you for considering contributing to **Gamify**! 🎉  
@@ -63,9 +62,17 @@ Ready to dive into the code? Here's a quick guide to get you going:
 
    ```
    gamify/
-   ├── client/   # React frontend
-   ├── server/   # Node.js + Express API backend
-   └── bot/      # Discord.js bot
+   ├── .github/             # GitHub configs like issue templates and workflows
+   ├── bot/                 # Discord companion bot built with Discord.js
+   ├── client/              # Frontend app built with React and Tailwind CSS
+   ├── server/              # REST API backend built with Node.js and Express
+   ├── .gitignore           # Ignore rules for Git
+   ├── CODE_OF_CONDUCT.md   # Code of Conduct for contributors
+   ├── CONTRIBUTING.md      # This guide you're reading
+   ├── Concept_Note.md      # High-level concept and idea behind the project
+   ├── LICENSE              # MIT License info
+   ├── README.md            # Main project documentation
+
    ```
 
 4. **Create a new branch**
@@ -105,6 +112,7 @@ To keep our codebase clean and easy to read:
 
 - **Git Commit Messages**  
   Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format:
+
   - `feat:` for new features
   - `fix:` for bug fixes
   - `docs:` for documentation changes
