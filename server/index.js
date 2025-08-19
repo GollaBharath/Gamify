@@ -1,10 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import newsletter from "./routes/newsletter.js"; // Newsletter routes
 
 // Connect to Database
 connectDB();
@@ -24,8 +27,10 @@ app.use(
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
 });
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/newsletter", newsletter); // Register newsletter routes here
 
 // Generic error handler
 app.use((err, req, res, next) => {
