@@ -5,7 +5,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-
+import pointsRouter from "./routes/pointsRoutes.js";
 // Connect to Database
 connectDB();
 
@@ -26,7 +26,7 @@ app.get("/api/health", (req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/points", pointsRouter);
 // Generic error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
