@@ -140,6 +140,52 @@
 </div>
 
 ---
+### Frontend folder Structure
+```
+client/
+├─ public/
+│  └─ vite.svg
+├─ src/
+│  ├─ components/
+│  │  ├─ Footer.jsx
+│  │  ├─ Home.jsx
+│  │  ├─ Navbar.jsx
+│  │  └─ ScrollToTop.jsx
+│  ├─ Context/
+│  │  └─ AuthContext.jsx
+│  ├─ pages/
+│  │  ├─ About.jsx
+│  │  ├─ AuthForms.jsx
+│  │  ├─ Contact.jsx
+│  │  ├─ Dashboard.jsx
+│  │  └─ Profile.jsx
+│  ├─ routes/
+│  │  └─ ProtectedRoute.jsx
+│  ├─ App.jsx
+│  ├─ index.css
+│  └─ main.jsx
+└─ Additional Documentation
+
+```
+
+### Backend folder Structure
+```
+server/
+├─ config/
+│  └─ db.js
+├─ controllers/
+│  ├─ authController.js
+│  └─ userController.js
+├─ middlewares/
+│  └─ authMiddleware.js
+├─ models/
+│  └─ User.js
+├─ routes/
+│  ├─ authRoutes.js
+│  └─ userRoutes.js
+└─ Additional Documentation
+
+```
 
 ## ⚡ Quick Start / Installation
 

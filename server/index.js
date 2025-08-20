@@ -6,7 +6,9 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import pointsRouter from "./routes/pointsRoutes.js";
-// Connect to Database
+import newsletterRoutes from "./routes/newsletter.js";
+
+// ✅ Connect to DB
 connectDB();
 
 const app = express();
@@ -27,6 +29,8 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/points", pointsRouter);
+app.use("/api/newsletter", newsletterRoutes);
+
 // Generic error handler
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
