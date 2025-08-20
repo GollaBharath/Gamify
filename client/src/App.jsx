@@ -26,7 +26,6 @@ import { ScrollToTop } from './components/ScrollToTop';
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
   const howItWorksAnimation = useScrollAnimation();
-  const coreFeaturesAnimation = useScrollAnimation();
   const hierarchyAnimation = useScrollAnimation();
 
   const scrollToHierarchy = () => {
@@ -74,7 +73,7 @@ function AppContent() {
       </nav>
 
       {/* Hero Section */}
-        <section className="py-20 px-6 relative overflow-hidden">
+        <section className="py-20 px-6 relative overflow-hidden" >
       <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
       <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200/30 dark:bg-blue-400/20 rounded-full blur-3xl"></div>
       <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-200/30 dark:bg-purple-400/20 rounded-full blur-3xl"></div>
@@ -137,7 +136,7 @@ function AppContent() {
                     <Crown className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-yellow-300 to-orange-400 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">1</span>
+                    
                   </div>
                 </div>
               </div>
@@ -162,7 +161,7 @@ function AppContent() {
                     <Shield className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-400 to-pink-500 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">2</span>
+                    
                   </div>
                 </div>
               </div>
@@ -187,7 +186,7 @@ function AppContent() {
                     <Users className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">3</span>
+                    
                   </div>
                 </div>
               </div>
@@ -212,7 +211,7 @@ function AppContent() {
                     <Star className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">4</span>
+                    
                   </div>
                 </div>
               </div>
@@ -237,7 +236,7 @@ function AppContent() {
                     <User className="h-8 w-8 text-white group-hover:scale-110 transition-transform duration-300" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-white">5</span>
+                    
                   </div>
                 </div>
               </div>
@@ -316,22 +315,9 @@ function AppContent() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-      {/* Core Features Section */}
-      <section ref={coreFeaturesAnimation.ref} className="py-16 px-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 relative overflow-hidden">
-        <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-800 to-purple-800 dark:from-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-4">Core Features</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Everything you need to create an engaging community experience.</p>
-          </div>
-          <div className="space-y-8">
             {/* Virtual Shop */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-green-500/10 transition-all duration-700 transform ${
-              coreFeaturesAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+             <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-700 delay-150 transform ${
+              howItWorksAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
             } hover:-translate-y-1 group`}>
               <div className="flex-shrink-0">
                 <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-green-500/30 transition-all duration-300">
@@ -345,9 +331,9 @@ function AppContent() {
                 </p>
               </div>
             </div>
-            {/* Leaderboard System */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-700 delay-150 transform ${
-              coreFeaturesAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
+             {/* Leaderboard System */}
+            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-700 transform ${
+              howItWorksAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
             } hover:-translate-y-1 group`}>
               <div className="flex-shrink-0">
                 <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-purple-500/30 transition-all duration-300">
@@ -361,9 +347,9 @@ function AppContent() {
                 </p>
               </div>
             </div>
-            {/* Validation System */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-red-500/10 transition-all duration-700 delay-300 transform ${
-              coreFeaturesAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+             {/* Validation System */}
+             <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-700 delay-150 transform ${
+              howItWorksAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
             } hover:-translate-y-1 group`}>
               <div className="flex-shrink-0">
                 <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-red-500/30 transition-all duration-300">
@@ -375,22 +361,6 @@ function AppContent() {
                 <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
                   Moderators ensure fairness and quality by reviewing submissions before awarding points to deserving participants.
                                   </p>
-              </div>
-            </div>
-            {/* Expandable Framework */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-700 delay-500 transform ${
-              coreFeaturesAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
-              <div className="flex-shrink-0">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-400 to-indigo-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300">
-                  <Zap className="h-7 w-7 text-white group-hover:scale-110 transition-transform duration-300" />
-                </div>
-              </div>
-              <div className="flex-grow">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">Expandable Framework</h3>
-                <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed">
-                  Open framework designed for future enhancements and customizations to meet your community's evolving needs.
-                </p>
               </div>
             </div>
           </div>
