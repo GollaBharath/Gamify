@@ -38,7 +38,7 @@ const award = async (req, res) => {
 };
 
 const getHistory = async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.query;
   try {
     let filter = {};
     if (req.user.role === "Member") {
