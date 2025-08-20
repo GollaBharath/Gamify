@@ -74,43 +74,41 @@ function AppContent() {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 px-6 relative overflow-hidden" height="100vh">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
-        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200/30 dark:bg-blue-400/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-200/30 dark:bg-purple-400/20 rounded-full blur-3xl"></div>
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-6 leading-tight">
-            Transform Your Community
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-            Gamify is a community engagement platform that motivates participation through 
-            hierarchical roles, events, tasks, and a rewarding point system.
-          </p>
-         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-  <button
-    onClick={() => window.location.href = '/get-started'}
-    className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 flex items-center justify-center"
-    type="button"
-  >
-    Start Engaging
-    <ArrowRight className="h-5 w-5 ml-2" />
-  </button>
+        <section className="py-20 px-6 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-400/10 dark:to-purple-400/10"></div>
+      <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200/30 dark:bg-blue-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-200/30 dark:bg-purple-400/20 rounded-full blur-3xl"></div>
+      <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 dark:from-white dark:via-blue-200 dark:to-purple-200 bg-clip-text text-transparent mb-6 leading-tight">
+          Transform Your Community
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
+          Gamify is a community engagement platform that motivates participation through 
+          hierarchical roles, events, tasks, and a rewarding point system.
+        </p>
 
-  <button
-    onClick={() => {
-      const el = document.getElementById('hierarchy-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }}
-    className="cursor-pointer border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-8 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 transition transform hover:-translate-y-2 hover:scale-105"
-    type="button"
-  >
-    Learn More
-  </button>
-</div>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Start Engaging */}
+          <button
+            onClick={() => window.location.href = '/get-started'} // navigation to another page
+            className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 flex items-center justify-center focus:outline-none"
+            type="button"
+          >
+            Start Engaging
+            <ArrowRight className="h-5 w-5 ml-2" />
+          </button>
 
-
+          {/* Learn More */}
+          <button
+            onClick={scrollToHierarchy} // scroll to hierarchy section
+            className="cursor-pointer border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-8 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 transform transition duration-300 hover:-translate-y-2 hover:scale-105 focus:outline-none"
+            type="button"
+          >
+            Learn More
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Hierarchy Section */}
       <section 
