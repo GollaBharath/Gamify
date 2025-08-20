@@ -34,6 +34,7 @@ function AppContent() {
       hierarchySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 transition-all duration-500">
@@ -51,7 +52,15 @@ function AppContent() {
           </div>
           <div className="flex items-center space-x-4">
             <button
+              onClick={() => window.location.href = '/get-started'}
+              className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              type="button"
+            >
+              Get Started
+            </button>
+            <button
               onClick={toggleTheme}
+                style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10, cursor: 'pointer' }}
               className="p-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:shadow-lg transition-all duration-300"
               type="button"
             >
@@ -61,13 +70,7 @@ function AppContent() {
                 <Sun className="h-5 w-5 text-yellow-500" />
               )}
             </button>
-            <button
-              onClick={() => window.location.href = '/get-started'}
-              className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              type="button"
-            >
-              Get Started
-            </button>
+            
           </div>
         </div>
       </nav>
@@ -90,6 +93,7 @@ function AppContent() {
           {/* Start Engaging */}
           <button
             onClick={() => window.location.href = '/get-started'} // navigation to another page
+            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10, cursor: 'pointer' }}
             className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-2xl hover:scale-105 transition duration-300 flex items-center justify-center focus:outline-none"
             type="button"
           >
@@ -100,6 +104,7 @@ function AppContent() {
           {/* Learn More */}
           <button
             onClick={scrollToHierarchy} // scroll to hierarchy section
+            style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10, cursor: 'pointer' }}
             className="cursor-pointer border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-8 py-3 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-blue-400 dark:hover:border-blue-500 transform transition duration-300 hover:-translate-y-2 hover:scale-105 focus:outline-none"
             type="button"
           >
@@ -127,9 +132,7 @@ function AppContent() {
           </div>
           <div className="space-y-8">
             {/* Organization */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-700 transform ${
-              hierarchyAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
+            <div className={"flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-700 transform "}>
               <div className="flex-shrink-0">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-yellow-500/30 transition-all duration-300">
@@ -152,9 +155,7 @@ function AppContent() {
               </div>
             </div>
             {/* Admins */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-red-500/10 transition-all duration-700 delay-150 transform ${
-              hierarchyAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
+            <div className={"flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-red-500/10 transition-all duration-700 delay-150 transform "}>
               <div className="flex-shrink-0">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-red-500/30 transition-all duration-300">
@@ -177,9 +178,7 @@ function AppContent() {
               </div>
             </div>
             {/* Event Staff */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-700 delay-300 transform ${
-              hierarchyAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
+            <div className={"flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-700 delay-300 transform "}>
               <div className="flex-shrink-0">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-blue-500/30 transition-all duration-300">
@@ -202,9 +201,7 @@ function AppContent() {
               </div>
             </div>
             {/* Moderators */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-green-500/10 transition-all duration-700 delay-450 transform ${
-              hierarchyAnimation.isVisible ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
+            <div className={"flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-green-500/10 transition-all duration-700 delay-450 transform "}>
               <div className="flex-shrink-0">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-green-500/30 transition-all duration-300">
@@ -227,9 +224,7 @@ function AppContent() {
               </div>
             </div>
             {/* Members */}
-            <div className={`flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-700 delay-600 transform ${
-              hierarchyAnimation.isVisible ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'
-            } hover:-translate-y-1 group`}>
+            <div className={"flex items-center space-x-6 p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-700 delay-600 transform "}>
               <div className="flex-shrink-0">
                 <div className="relative">
                   <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-purple-500/30 transition-all duration-300">
@@ -425,10 +420,14 @@ function AppContent() {
           <p className="text-xl text-blue-100 mb-8">
             Join thousands of communities already using Gamify to boost engagement and create meaningful connections.
           </p>
-          <button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 inline-flex items-center shadow-xl hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105">
-            Get Started Today
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </button>
+          <button
+              onClick={() => window.location.href = '/get-started'}
+              className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              style={{ pointerEvents: 'auto', position: 'relative', zIndex: 10, cursor: 'pointer' }}
+              type="button"
+            >
+              Get Started
+            </button>
         </div>
       </section>
 
