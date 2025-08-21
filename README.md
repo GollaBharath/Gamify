@@ -42,20 +42,37 @@
 </td>
 <td align="center">
 <img src="https://img.shields.io/github/issues/gollabharath/gamify" alt="GitHub Issues">
-<br><b>Issues</b>
+<br><b>Open Issues</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/issues-pr/gollabharath/gamify" alt="GitHub Pull Requests">
-<br><b>Pull Requests</b>
+<img src="https://img.shields.io/github/issues-closed/gollabharath/gamify" alt="Closed Issues">
+<br><b>Closed Issues</b>
+</td>
+<td align="center">
+<img src="https://img.shields.io/github/issues-pr/gollabharath/gamify" alt="Open PRs">
+<br><b>Open PRs</b>
+</td>
+<td align="center">
+<img src="https://img.shields.io/github/issues-pr-closed/gollabharath/gamify" alt="Closed PRs">
+<br><b>Closed PRs</b>
 </td>
 <td align="center">
 <img src="https://img.shields.io/github/contributors/gollabharath/gamify" alt="GitHub Contributors">
 <br><b>Contributors</b>
 </td>
+<td align="center">
+<img src="https://img.shields.io/github/commit-activity/m/gollabharath/gamify" alt="Commits per Month">
+<br><b>Commits</b>
+</td>
+<td align="center">
+<img src="https://img.shields.io/github/repo-size/gollabharath/gamify" alt="Repo Size">
+<br><b>Project Size</b>
+</td>
 </tr>
 </table>
 
 </div>
+
 
 ---
 
