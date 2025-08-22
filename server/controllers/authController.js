@@ -13,7 +13,13 @@ const signToken = (id) => {
 
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    // Normalize inputs: trim username, lowercase and trim email
+    const rawUsername = req.body.username;
+    const rawEmail = req.body.email;
+    const password = req.body.password;
+
+    const username = rawUsername?.toString().trim();
+    const email = rawEmail?.toString().trim().toLowerCase();
 
     if (!username || !email || !password) {
       return res
@@ -52,7 +58,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    // Normalize incoming email
+    const rawEmail = req.body.email;
+    const password = req.body.password;
+
+    const email = rawEmail?.toString().trim().toLowerCase();
 
     if (!email || !password) {
       return res
