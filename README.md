@@ -237,6 +237,9 @@ Create `.env` files in `client/`, `server/`, and `bot/` directories.
 PORT=5000
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
+FRONTEND_URL=your_frontend_url
+EMAIL_USERNAME=your_email
+EMAIL_PASSWORD-your_password
 ```
 
 #### Example: `bot/.env`

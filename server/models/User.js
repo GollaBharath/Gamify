@@ -30,11 +30,11 @@ const userSchema = new mongoose.Schema({
     enum: ["Member", "Moderator", "Event Staff", "Admin", "Organisation"],
     default: "Member",
   },
-  organization: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Organization",
-    required: true,
-  },
+  // organization: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Organization",
+  //   required: true,
+  // },
   points: {
     type: Number,
     default: 0,
