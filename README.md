@@ -73,6 +73,22 @@
 
 </div>
 
+---
+
+<details>
+  <summary><strong>📑 Table of Contents</strong></summary>
+
+  - [💡 Why Choose Gamify?](#-why-choose-gamify)
+  - [🚀 Core Features](#-core-features)
+  - [🧱 Tech Stack & Architecture](#-tech-stack--architecture)
+  - [⚙ Folder Structures](#-folder-structures)
+    - [Frontend folder structure](#frontend-folder-structure)
+    - [Backend folder structure](#backend-folder-structure)
+  - [⚡ Quick Start / Installation](#-quick-start--installation)
+  - [🤝 Contributing](#-contributing)
+  - [📄 License](#-license)
+
+</details>
 
 ---
 
@@ -157,7 +173,10 @@
 </div>
 
 ---
-### Frontend folder Structure
+
+## ⚙ Folder Structures
+
+### Frontend folder structure
 ```
 client/
 ├─ public/
@@ -185,7 +204,7 @@ client/
 
 ```
 
-### Backend folder Structure
+### Backend folder structure
 ```
 server/
 ├─ config/
@@ -287,3 +306,5 @@ This project is licensed under the **MIT License**.
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/gollabharath/gamify/blob/main/LICENSE)
 
 </div>
+
+---
