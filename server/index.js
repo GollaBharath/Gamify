@@ -10,7 +10,7 @@ import newsletterRoutes from "./routes/newsletter.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-import mongoose from "mongoose"; // Needed for DB status in health check
+import mongoose from "mongoose"; // For DB status in health check
 
 // ✅ Connect to DB
 connectDB();
@@ -76,5 +76,3 @@ app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
   console.log(`JWT expires in: ${JWT_EXPIRES_IN}`);
 });
-
-
