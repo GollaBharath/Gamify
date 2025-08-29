@@ -10,6 +10,7 @@ import { LoginForm, RegisterForm } from "./pages/AuthForms.jsx";
 import { Dashboard } from "./pages/Dashboard.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTopButton from "./components/ScrollToTopButton";
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <ScrollToTopButton />
       </div>
     </AuthProvider>
   );

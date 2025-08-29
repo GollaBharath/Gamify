@@ -8,6 +8,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
@@ -32,21 +33,21 @@ if (fs.existsSync(commandsPath)) {
 // Load event files dynamically
 const eventsPath = path.join(__dirname, 'events');
 if (fs.existsSync(eventsPath)) {
-  const eventFiles = fs
-    .readdirSync(eventsPath)
-    .filter(fileName => fileName.endsWith('.js'));
+    const eventFiles = fs
+        .readdirSync(eventsPath)
+        .filter(fileName => fileName.endsWith('.js'));
 
-  for (const fileName of eventFiles) {
-    const filePath = path.join(eventsPath, fileName);
-    const event = require(filePath);
-    if (event && event.name && typeof event.execute === 'function') {
-      if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
-      } else {
-        client.on(event.name, (...args) => event.execute(...args));
+    for (const fileName of eventFiles) {
+        const filePath = path.join(eventsPath, fileName);
+            const event = require(filePath);
+            if (event && event.name && typeof event.execute === 'function') {
+                if (event.once) {
+                    client.once(event.name, (...args) => event.execute(...args));
+                } else {
+                    client.on(event.name, (...args) => event.execute(...args));
       }
+        }
     }
-  }
 }
 
 client.login(process.env.DISCORD_TOKEN);
