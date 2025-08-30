@@ -37,7 +37,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: "Internal server error" });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5173;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
 app.listen(PORT, () => {

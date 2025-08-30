@@ -11,3 +11,12 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/gamify-sw.js")
+      .then((reg) => console.log("Gamify Service Worker registered", reg))
+      .catch((err) => console.error("Gamify Service Worker failed", err));
+  });
+}
