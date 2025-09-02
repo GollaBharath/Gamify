@@ -28,6 +28,19 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+    //  Check URL for OAuth token 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const oauthToken = params.get("token");
+    if (oauthToken) {
+      setToken(oauthToken);
+      applyAuthHeader(oauthToken);
+      navigate("/dashboard"); 
+    }
+    
+  }, []);
+
+
   // Set up axios once
   useEffect(() => {
     applyAuthHeader(token);
@@ -124,6 +137,10 @@ export const AuthProvider = ({ children }) => {
     () => ({ user, token, isLoading, register, login, logout, loadUser }),
     [user, token, isLoading]
   );
+  useEffect(() => {
+  console.log("Current user:", user);
+}, [user]);
+
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

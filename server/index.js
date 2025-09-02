@@ -9,6 +9,9 @@ import pointsRouter from "./routes/pointsRoutes.js";
 import newsletterRoutes from "./routes/newsletter.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import session from "express-session";
+import passport from "passport";
+import "./config/passport.js"; // load Google OAuth strategy
 import morgan from "morgan";
 import mongoose from "mongoose"; // For DB status in health check
 
@@ -31,13 +34,25 @@ app.use(
 app.use(morgan("dev"));
 
 // Configurable CORS
-const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5173"];
+const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || ["http://localhost:5000"];
 app.use(
   cors({
-
+    origin: allowedOrigins,
     credentials: true,
   })
 );
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "supersecret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {secure: false},
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.get("/api/health", (req, res) => {
