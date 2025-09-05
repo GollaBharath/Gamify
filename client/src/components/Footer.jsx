@@ -161,7 +161,7 @@ export const Footer = () => {
                 <FaTwitter className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://github.com/GollaBharath/Gamify"
                 className="text-gray-400 hover:text-purple-400 transition"
               >
                 <FaGithub className="w-5 h-5" />

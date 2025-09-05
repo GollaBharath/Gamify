@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // allow either email-password or google-login
+  },
   username: {
     type: String,
     required: true,
@@ -11,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false, //google accounts may not always provide email at first
     unique: true,
     trim: true,
     lowercase: true,
@@ -24,6 +29,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6,
+    required: function () {
+      return !this.googleId   //only require if not google user
+    }
+     
   },
   role: {
     type: String,
