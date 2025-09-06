@@ -258,7 +258,28 @@ MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 FRONTEND_URL=your_frontend_url
 EMAIL_USERNAME=your_email
-EMAIL_PASSWORD-your_password
+EMAIL_PASSWORD=your_password
+
+# Rate limiting for authentication endpoints
+AUTH_LOGIN_MAX=10
+AUTH_LOGIN_WINDOW_MS=900000
+AUTH_REGISTER_MAX=5
+AUTH_REGISTER_WINDOW_MS=3600000
+```
+
+#### Rate Limiting Configuration
+
+The server includes rate limiting for authentication endpoints to prevent abuse:
+
+- **Login Protection**: `AUTH_LOGIN_MAX` attempts per `AUTH_LOGIN_WINDOW_MS` milliseconds (default: 10 per 15 minutes)
+- **Registration Protection**: `AUTH_REGISTER_MAX` attempts per `AUTH_REGISTER_WINDOW_MS` milliseconds (default: 5 per hour)
+
+When limits are exceeded, endpoints return:
+```json
+{
+  "success": false,
+  "message": "Too many login attempts. Try again later."
+}
 ```
 
 #### Example: `bot/.env`
