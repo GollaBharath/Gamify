@@ -5,21 +5,29 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "changeme-super-secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
-const signToken = (id) => {
-  return jwt.sign({ id }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-};
+const signToken = (id) =>
+  jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+const normalizeInput = (str, lower = false) =>
+  str?.toString().trim()[lower ? "toLowerCase" : "toString"]?.() ?? null;
+
+const buildUserResponse = (user, token) => ({
+  success: true,
+  token,
+  user: {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  },
+});
 
 export const register = async (req, res) => {
   try {
-    // Normalize inputs: trim username, lowercase and trim email
-    const rawUsername = req.body.username;
-    const rawEmail = req.body.email;
-    const password = req.body.password;
+    const { username: rawUsername, email: rawEmail, password } = req.body;
 
-    const username = rawUsername?.toString().trim();
-    const email = rawEmail?.toString().trim().toLowerCase();
+    const username = normalizeInput(rawUsername);
+    const email = normalizeInput(rawEmail, true);
 
     if (!username || !email || !password) {
       return res
@@ -38,16 +46,7 @@ export const register = async (req, res) => {
     const user = await User.create({ username, email, password: hash });
     const token = signToken(user._id);
 
-    res.status(201).json({
-      success: true,
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    res.status(201).json(buildUserResponse(user, token));
   } catch (err) {
     console.error("Registration error:", err);
     res
@@ -58,11 +57,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    // Normalize incoming email
-    const rawEmail = req.body.email;
-    const password = req.body.password;
-
-    const email = rawEmail?.toString().trim().toLowerCase();
+    const { email: rawEmail, password } = req.body;
+    const email = normalizeInput(rawEmail, true);
 
     if (!email || !password) {
       return res
@@ -85,16 +81,7 @@ export const login = async (req, res) => {
     }
 
     const token = signToken(user._id);
-    res.json({
-      success: true,
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    res.json(buildUserResponse(user, token));
   } catch (err) {
     console.error("Login error:", err);
     res
