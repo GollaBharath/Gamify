@@ -78,15 +78,16 @@
 <details>
   <summary><strong>📑 Table of Contents</strong></summary>
 
-  - [💡 Why Choose Gamify?](#-why-choose-gamify)
-  - [🚀 Core Features](#-core-features)
-  - [🧱 Tech Stack & Architecture](#-tech-stack--architecture)
-  - [⚙ Folder Structures](#-folder-structures)
-    - [Frontend folder structure](#frontend-folder-structure)
-    - [Backend folder structure](#backend-folder-structure)
-  - [⚡ Quick Start / Installation](#-quick-start--installation)
-  - [🤝 Contributing](#-contributing)
-  - [📄 License](#-license)
+- [💡 Why Choose Gamify?](#-why-choose-gamify)
+- [🚀 Core Features](#-core-features)
+- [🧱 Tech Stack & Architecture](#-tech-stack--architecture)
+- [⚙ Folder Structures](#-folder-structures)
+  - [Frontend folder structure](#frontend-folder-structure)
+  - [Backend folder structure](#backend-folder-structure)
+- [⚡ Quick Start / Installation](#-quick-start--installation)
+- [🤝 Contributing](#-contributing)
+- [🎖️ Contributors](#-contributors)
+- [📄 License](#-license)
 
 </details>
 
@@ -177,6 +178,7 @@
 ## ⚙ Folder Structures
 
 ### Frontend folder structure
+
 ```
 client/
 ├─ public/
@@ -205,6 +207,7 @@ client/
 ```
 
 ### Backend folder structure
+
 ```
 server/
 ├─ config/
@@ -275,6 +278,7 @@ The server includes rate limiting for authentication endpoints to prevent abuse:
 - **Registration Protection**: `AUTH_REGISTER_MAX` attempts per `AUTH_REGISTER_WINDOW_MS` milliseconds (default: 5 per hour)
 
 When limits are exceeded, endpoints return:
+
 ```json
 {
   "success": false,
@@ -318,6 +322,20 @@ We love contributions from the community! To contribute:
 5. Open a Pull Request
 
 > For major changes, please open an issue first to discuss what you’d like to change.
+
+---
+
+## 🎖️ Contributors
+
+We are grateful to all the amazing contributors who have helped make this project better! 🌟
+
+<div align="center">
+
+### 👨‍💻 Meet Our Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=GollaBharath/Gamify)](https://github.com/GollaBharath/Gamify/graphs/contributors)
+
+</div>
 
 ---
 
