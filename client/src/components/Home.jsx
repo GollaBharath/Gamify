@@ -597,7 +597,7 @@ export const Home = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             {featuredGames.map((game) => (
               <motion.div
                 key={game.id}
@@ -624,7 +624,7 @@ export const Home = () => {
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <FaStar
