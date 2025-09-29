@@ -11,6 +11,7 @@ import { Dashboard } from "./pages/Dashboard.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToTopButton from "./components/ScrollToTopButton";
+import Chatbot from "./components/chatbot.jsx";
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
         </main>
         <Footer />
         <ScrollToTopButton />
+        <Chatbot />
       </div>
     </AuthProvider>
   );
