@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.jsx";
+import { useTheme } from "../Context/ThemeContext.jsx";
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
 export function LoginForm() {
@@ -9,6 +10,7 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [isLoadingLocal, setIsLoadingLocal] = useState(false);
   const { login } = useAuth();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -31,7 +33,7 @@ export function LoginForm() {
     }
   };
 
-   const handleGoogleLogin = () => {
+  const handleGoogleLogin = () => {
     console.log("Google OAuth initiated");
     console.log("API URL:", import.meta.env.VITE_API_URL);
     
@@ -40,29 +42,46 @@ export function LoginForm() {
       return;
     }
     
-   
-    const googleOAuthUrl =window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+    const googleOAuthUrl = `${import.meta.env.VITE_API_URL}/api/auth/google`;
     console.log("Redirecting to:", googleOAuthUrl);
     window.location.href = googleOAuthUrl;
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-8">
+    <div className={`min-h-screen ${
+      darkMode 
+        ? "bg-gray-900 text-white" 
+        : "bg-gray-50 text-gray-900"
+    } flex flex-col items-center justify-center p-4 transition-colors duration-300`}>
+      <div className={`w-full max-w-md ${
+        darkMode 
+          ? "bg-gray-800" 
+          : "bg-white"
+      } rounded-lg shadow-lg p-8 transition-colors duration-300`}>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-purple-500 mb-2">Gamify</h1>
+          <h1 className={`text-3xl font-bold ${
+            darkMode ? "text-purple-500" : "text-purple-600"
+          } mb-2 transition-colors duration-300`}>
+            Gamify
+          </h1>
           <h2 className="text-2xl font-bold">Login</h2>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/20 text-red-400 rounded-lg text-center">
+          <div className={`mb-4 p-3 ${
+            darkMode 
+              ? "bg-red-500/20 text-red-400" 
+              : "bg-red-100 text-red-600"
+          } rounded-lg text-center transition-colors duration-300`}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaEnvelope className="mr-2" /> Email
             </label>
             <input
@@ -71,14 +90,20 @@ export function LoginForm() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-4 py-2 ${
+                darkMode 
+                  ? "bg-gray-700 text-white placeholder-gray-500" 
+                  : "bg-gray-100 text-gray-900 placeholder-gray-400"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
               placeholder="Enter your email"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaLock className="mr-2" /> Password
             </label>
             <div className="relative">
@@ -88,13 +113,21 @@ export function LoginForm() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className={`w-full px-4 py-2 ${
+                  darkMode 
+                    ? "bg-gray-700 text-white placeholder-gray-500" 
+                    : "bg-gray-100 text-gray-900 placeholder-gray-400"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
                 placeholder="••••••••"
                 required
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                  darkMode 
+                    ? "text-gray-400 hover:text-white" 
+                    : "text-gray-600 hover:text-gray-900"
+                } transition-colors duration-300`}
                 onClick={() => setShowPassword((s) => !s)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -109,28 +142,39 @@ export function LoginForm() {
               isLoadingLocal
                 ? "bg-purple-700 cursor-not-allowed"
                 : "bg-purple-600 hover:bg-purple-700"
-            }`}
+            } text-white`}
           >
             {isLoadingLocal ? "Logging in..." : "Login"}
           </button>
-           <button
-           type="button"
-          onClick={handleGoogleLogin}
-          className="w-full mb-3 bg-black-600 hover:bg-purple-700 dark:bg-red-700 dark:hover:bg-red-600 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-        >
-          <svg className="h-5 w-5" viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.8 31.7 29.4 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 12.5 3.6 3.6 12.5 3.6 24S12.5 44.4 24 44.4 44.4 35.5 44.4 24c0-1.1-.1-2.3-.3-3.5z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 16.3 3.6 9.6 7.8 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44.4c5.3 0 10.1-2 13.6-5.3l-6.3-5.2c-2 1.4-4.6 2.2-7.3 2.2-5.4 0-9.8-3.3-11.4-8l-6.6 5.1C9.3 40.2 16 44.4 24 44.4z"/>
-            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 3-3.5 5.3-6.6 5.9l6.3 5.2c-.4.3 9.4-6.6 8.6-19.6z"/>
-          </svg>
-          Continue with Google
-        </button>
+
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className={`w-full mb-3 ${
+              darkMode 
+                ? "bg-gray-700 hover:bg-gray-600 border-gray-600" 
+                : "bg-white hover:bg-gray-50 border-gray-300"
+            } border-2 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+          >
+            <svg className="h-5 w-5" viewBox="0 0 48 48">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.8 31.7 29.4 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 12.5 3.6 3.6 12.5 3.6 24S12.5 44.4 24 44.4 44.4 35.5 44.4 24c0-1.1-.1-2.3-.3-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 16.3 3.6 9.6 7.8 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44.4c5.3 0 10.1-2 13.6-5.3l-6.3-5.2c-2 1.4-4.6 2.2-7.3 2.2-5.4 0-9.8-3.3-11.4-8l-6.6 5.1C9.3 40.2 16 44.4 24 44.4z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 3-3.5 5.3-6.6 5.9l6.3 5.2c-.4.3 9.4-6.6 8.6-19.6z"/>
+            </svg>
+            <span className={darkMode ? "text-white" : "text-gray-900"}>
+              Continue with Google
+            </span>
+          </button>
         </form>
 
-        <div className="mt-6 text-center text-gray-400">
+        <div className={`mt-6 text-center ${
+          darkMode ? "text-gray-400" : "text-gray-600"
+        } transition-colors duration-300`}>
           Don't have an account?{" "}
-          <Link to="/register" className="text-purple-400 hover:underline">
+          <Link to="/register" className={`${
+            darkMode ? "text-purple-400" : "text-purple-600"
+          } hover:underline transition-colors duration-300`}>
             Register
           </Link>
         </div>
@@ -150,6 +194,7 @@ export function RegisterForm() {
   const [error, setError] = useState("");
   const [isLoadingLocal, setIsLoadingLocal] = useState(false);
   const { register } = useAuth();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -188,7 +233,8 @@ export function RegisterForm() {
       setIsLoadingLocal(false);
     }
   };
-   const handleGoogleLogin = () => {
+
+  const handleGoogleLogin = () => {
     console.log("Google OAuth initiated");
     console.log("API URL:", import.meta.env.VITE_API_URL);
     
@@ -197,29 +243,46 @@ export function RegisterForm() {
       return;
     }
     
-   
-    const googleOAuthUrl =window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+    const googleOAuthUrl = `${import.meta.env.VITE_API_URL}/api/auth/google`;
     console.log("Redirecting to:", googleOAuthUrl);
     window.location.href = googleOAuthUrl;
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-lg p-8">
+    <div className={`min-h-screen ${
+      darkMode 
+        ? "bg-gray-900 text-white" 
+        : "bg-gray-50 text-gray-900"
+    } flex flex-col items-center justify-center p-4 transition-colors duration-300`}>
+      <div className={`w-full max-w-md ${
+        darkMode 
+          ? "bg-gray-800" 
+          : "bg-white"
+      } rounded-lg shadow-lg p-8 transition-colors duration-300`}>
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-purple-500 mb-2">Gamify</h1>
+          <h1 className={`text-3xl font-bold ${
+            darkMode ? "text-purple-500" : "text-purple-600"
+          } mb-2 transition-colors duration-300`}>
+            Gamify
+          </h1>
           <h2 className="text-2xl font-bold">Register</h2>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/20 text-red-400 rounded-lg text-center">
+          <div className={`mb-4 p-3 ${
+            darkMode 
+              ? "bg-red-500/20 text-red-400" 
+              : "bg-red-100 text-red-600"
+          } rounded-lg text-center transition-colors duration-300`}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaUser className="mr-2" /> Username
             </label>
             <input
@@ -228,14 +291,20 @@ export function RegisterForm() {
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
               }
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-4 py-2 ${
+                darkMode 
+                  ? "bg-gray-700 text-white placeholder-gray-500" 
+                  : "bg-gray-100 text-gray-900 placeholder-gray-400"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
               placeholder="Enter username"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaEnvelope className="mr-2" /> Email
             </label>
             <input
@@ -244,14 +313,20 @@ export function RegisterForm() {
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-4 py-2 ${
+                darkMode 
+                  ? "bg-gray-700 text-white placeholder-gray-500" 
+                  : "bg-gray-100 text-gray-900 placeholder-gray-400"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
               placeholder="Enter email"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaLock className="mr-2" /> Password
             </label>
             <div className="relative">
@@ -261,13 +336,21 @@ export function RegisterForm() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className={`w-full px-4 py-2 ${
+                  darkMode 
+                    ? "bg-gray-700 text-white placeholder-gray-500" 
+                    : "bg-gray-100 text-gray-900 placeholder-gray-400"
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
                 placeholder="••••••••"
                 required
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                  darkMode 
+                    ? "text-gray-400 hover:text-white" 
+                    : "text-gray-600 hover:text-gray-900"
+                } transition-colors duration-300`}
                 onClick={() => setShowPassword((s) => !s)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -276,7 +359,9 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1">
-            <label className="flex items-center text-gray-400">
+            <label className={`flex items-center ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            } transition-colors duration-300`}>
               <FaLock className="mr-2" /> Confirm Password
             </label>
             <input
@@ -285,7 +370,11 @@ export function RegisterForm() {
               onChange={(e) =>
                 setFormData({ ...formData, confirmPassword: e.target.value })
               }
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className={`w-full px-4 py-2 ${
+                darkMode 
+                  ? "bg-gray-700 text-white placeholder-gray-500" 
+                  : "bg-gray-100 text-gray-900 placeholder-gray-400"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300`}
               placeholder="••••••••"
               required
             />
@@ -298,28 +387,39 @@ export function RegisterForm() {
               isLoadingLocal
                 ? "bg-purple-700 cursor-not-allowed"
                 : "bg-purple-600 hover:bg-purple-700"
-            }`}
+            } text-white`}
           >
             {isLoadingLocal ? "Registering..." : "Register"}
           </button>
-            <button
+
+          <button
             type="button"
-          onClick={handleGoogleLogin}
-          className="w-full mb-3 bg-black-600 hover:bg-purple-700 dark:bg-red-700 dark:hover:bg-red-600 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-        >
-          <svg className="h-5 w-5" viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.8 31.7 29.4 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 12.5 3.6 3.6 12.5 3.6 24S12.5 44.4 24 44.4 44.4 35.5 44.4 24c0-1.1-.1-2.3-.3-3.5z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 16.3 3.6 9.6 7.8 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44.4c5.3 0 10.1-2 13.6-5.3l-6.3-5.2c-2 1.4-4.6 2.2-7.3 2.2-5.4 0-9.8-3.3-11.4-8l-6.6 5.1C9.3 40.2 16 44.4 24 44.4z"/>
-            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 3-3.5 5.3-6.6 5.9l6.3 5.2c-.4.3 9.4-6.6 8.6-19.6z"/>
-          </svg>
-          Sign up with Google
-        </button>
+            onClick={handleGoogleLogin}
+            className={`w-full mb-3 ${
+              darkMode 
+                ? "bg-gray-700 hover:bg-gray-600 border-gray-600" 
+                : "bg-white hover:bg-gray-50 border-gray-300"
+            } border-2 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+          >
+            <svg className="h-5 w-5" viewBox="0 0 48 48">
+              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.8 31.7 29.4 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 12.5 3.6 3.6 12.5 3.6 24S12.5 44.4 24 44.4 44.4 35.5 44.4 24c0-1.1-.1-2.3-.3-3.5z"/>
+              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3 0 5.7 1.1 7.7 2.9l5.7-5.7C34 5.6 29.3 3.6 24 3.6 16.3 3.6 9.6 7.8 6.3 14.7z"/>
+              <path fill="#4CAF50" d="M24 44.4c5.3 0 10.1-2 13.6-5.3l-6.3-5.2c-2 1.4-4.6 2.2-7.3 2.2-5.4 0-9.8-3.3-11.4-8l-6.6 5.1C9.3 40.2 16 44.4 24 44.4z"/>
+              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1 3-3.5 5.3-6.6 5.9l6.3 5.2c-.4.3 9.4-6.6 8.6-19.6z"/>
+            </svg>
+            <span className={darkMode ? "text-white" : "text-gray-900"}>
+              Sign up with Google
+            </span>
+          </button>
         </form>
 
-        <div className="mt-6 text-center text-gray-400">
+        <div className={`mt-6 text-center ${
+          darkMode ? "text-gray-400" : "text-gray-600"
+        } transition-colors duration-300`}>
           Already have an account?{" "}
-          <Link to="/login" className="text-purple-400 hover:underline">
+          <Link to="/login" className={`${
+            darkMode ? "text-purple-400" : "text-purple-600"
+          } hover:underline transition-colors duration-300`}>
             Login
           </Link>
         </div>

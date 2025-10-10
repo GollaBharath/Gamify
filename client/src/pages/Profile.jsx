@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../Context/AuthContext";
+import { useTheme } from "../Context/ThemeContext.jsx";
 import {
   FaUser,
   FaEnvelope,
@@ -17,7 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export const Profile = () => {
   const { user, logout } = useAuth();
-  const [darkMode, setDarkMode] = useState(true);
+  const { darkMode, toggleDarkMode } = useTheme();
   const [editMode, setEditMode] = useState(false);
   const [tempUsername, setTempUsername] = useState(user?.username || "");
   const [showSecurityModal, setShowSecurityModal] = useState(false);
@@ -29,7 +30,6 @@ export const Profile = () => {
     completeness: 72,
   };
 
-  const toggleDarkMode = () => setDarkMode(!darkMode);
   const handleSave = () => setEditMode(false);
   const handleDeleteAccount = () => console.log("Account deletion requested");
 
@@ -47,7 +47,7 @@ export const Profile = () => {
 
   return (
     <div
-      className={`min-h-screen mt-10 ${
+      className={`min-h-screen mt-16 ${
         darkMode ? "bg-gray-900" : "bg-gray-50"
       } transition-colors duration-300`}
     >
@@ -109,7 +109,7 @@ export const Profile = () => {
               className={`flex items-center space-x-2 px-4 py-2 rounded-xl ${
                 darkMode
                   ? "bg-gray-800 hover:bg-gray-700 text-red-400"
-                  : "bg-gray-200 hover:bg-gray-300 text-red-600"
+                  : "bg-white hover:bg-gray-100 text-red-600 border border-gray-300"
               } transition-colors shadow-md`}
             >
               <RiLogoutBoxLine />
@@ -129,13 +129,13 @@ export const Profile = () => {
                   darkMode ? "text-gray-300" : "text-gray-700"
                 } font-medium`}
               >
-                {tab}
+                <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
                   <motion.div
                     layoutId="activeTab"
                     className={`absolute inset-0 rounded-lg ${
                       darkMode ? "bg-purple-600/90" : "bg-purple-100"
-                    } z-0`}
+                    } -z-0`}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
@@ -166,8 +166,8 @@ export const Profile = () => {
                 className={`rounded-2xl p-6 ${
                   darkMode
                     ? "bg-gray-800/80 border-gray-700"
-                    : "bg-white/90 border-gray-200"
-                } border backdrop-blur-lg shadow-xl`}
+                    : "bg-white/90 border-gray-200 shadow-xl"
+                } border backdrop-blur-lg`}
               >
                 <div className="flex flex-col items-center">
                   <motion.div
@@ -177,7 +177,9 @@ export const Profile = () => {
                         ? "bg-gradient-to-br from-purple-900 to-indigo-900"
                         : "bg-gradient-to-br from-purple-200 to-indigo-200"
                     } 
-                      flex items-center justify-center text-5xl font-bold mb-4 shadow-lg`}
+                      flex items-center justify-center text-5xl font-bold mb-4 shadow-lg ${
+                        darkMode ? "text-white" : "text-purple-700"
+                      }`}
                   >
                     {user?.username?.charAt(0).toUpperCase()}
                   </motion.div>
@@ -215,8 +217,8 @@ export const Profile = () => {
                 className={`rounded-2xl p-6 ${
                   darkMode
                     ? "bg-gray-800/80 border-gray-700"
-                    : "bg-white/90 border-gray-200"
-                } border backdrop-blur-lg shadow-xl lg:col-span-2`}
+                    : "bg-white/90 border-gray-200 shadow-xl"
+                } border backdrop-blur-lg lg:col-span-2`}
               >
                 <div className="flex justify-between items-center mb-6">
                   <h2
@@ -233,7 +235,7 @@ export const Profile = () => {
                     className={`flex items-center space-x-2 px-4 py-2 rounded-xl ${
                       darkMode
                         ? "bg-gray-700 hover:bg-gray-600"
-                        : "bg-gray-200 hover:bg-gray-300"
+                        : "bg-gray-100 hover:bg-gray-200"
                     } transition-colors`}
                   >
                     <FaEdit size={14} />
@@ -245,7 +247,9 @@ export const Profile = () => {
                   {/* Username Field */}
                   <motion.div
                     whileHover={{ scale: editMode ? 1 : 1.01 }}
-                    className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-700/10 transition-colors"
+                    className={`flex items-start space-x-4 p-3 rounded-lg ${
+                      darkMode ? "hover:bg-gray-700/10" : "hover:bg-gray-50"
+                    } transition-colors`}
                   >
                     <div
                       className={`p-3 rounded-lg ${
@@ -293,7 +297,9 @@ export const Profile = () => {
                   {/* Email Field */}
                   <motion.div
                     whileHover={{ scale: 1.01 }}
-                    className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-700/10 transition-colors"
+                    className={`flex items-start space-x-4 p-3 rounded-lg ${
+                      darkMode ? "hover:bg-gray-700/10" : "hover:bg-gray-50"
+                    } transition-colors`}
                   >
                     <div
                       className={`p-3 rounded-lg ${
@@ -322,7 +328,7 @@ export const Profile = () => {
                       className={`text-xs px-2 py-1 rounded-full ${
                         darkMode
                           ? "bg-green-900/30 text-green-400"
-                          : "bg-green-100 text-green-800"
+                          : "bg-green-100 text-green-700"
                       }`}
                     >
                       Verified
@@ -332,7 +338,9 @@ export const Profile = () => {
                   {/* Password Field */}
                   <motion.div
                     whileHover={{ scale: 1.01 }}
-                    className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-700/10 transition-colors"
+                    className={`flex items-start space-x-4 p-3 rounded-lg ${
+                      darkMode ? "hover:bg-gray-700/10" : "hover:bg-gray-50"
+                    } transition-colors`}
                   >
                     <div
                       className={`p-3 rounded-lg ${
@@ -365,7 +373,7 @@ export const Profile = () => {
                           className={`text-xs px-2 py-1 rounded-full ${
                             darkMode
                               ? "bg-green-900/30 text-green-400"
-                              : "bg-green-100 text-green-800"
+                              : "bg-green-100 text-green-700"
                           }`}
                         >
                           Strong
@@ -376,7 +384,7 @@ export const Profile = () => {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setShowSecurityModal(true)}
-                      className={`px-4 py-2 rounded-xl ${
+                                           className={`px-4 py-2 rounded-xl ${
                         darkMode
                           ? "bg-purple-600 hover:bg-purple-700"
                           : "bg-purple-500 hover:bg-purple-600"
@@ -430,8 +438,8 @@ export const Profile = () => {
               className={`rounded-2xl p-6 ${
                 darkMode
                   ? "bg-gray-800/80 border-gray-700"
-                  : "bg-white/90 border-gray-200"
-              } border backdrop-blur-lg shadow-xl`}
+                  : "bg-white/90 border-gray-200 shadow-xl"
+              } border backdrop-blur-lg`}
             >
               <h2
                 className={`text-xl font-bold mb-6 ${
@@ -448,7 +456,7 @@ export const Profile = () => {
                   className={`p-6 rounded-xl ${
                     darkMode
                       ? "bg-gray-700/80 border-gray-600"
-                      : "bg-gray-100 border-gray-200"
+                      : "bg-gray-50 border-gray-200 shadow-lg"
                   } border backdrop-blur-sm`}
                 >
                   <div className="flex items-center space-x-4 mb-6">
@@ -523,12 +531,16 @@ export const Profile = () => {
                       <li key={index} className="flex items-center space-x-3">
                         <div
                           className={`p-1 rounded-full ${
-                            item.status ? "bg-green-500/20" : "bg-gray-500/20"
+                            item.status 
+                              ? darkMode ? "bg-green-500/20" : "bg-green-100"
+                              : darkMode ? "bg-gray-500/20" : "bg-gray-200"
                           }`}
                         >
                           <FaCheck
                             className={`text-xs ${
-                              item.status ? "text-green-500" : "text-gray-500"
+                              item.status 
+                                ? darkMode ? "text-green-500" : "text-green-600"
+                                : darkMode ? "text-gray-500" : "text-gray-400"
                             }`}
                           />
                         </div>
@@ -544,7 +556,7 @@ export const Profile = () => {
                   className={`p-6 rounded-xl ${
                     darkMode
                       ? "bg-gray-700/80 border-gray-600"
-                      : "bg-gray-100 border-gray-200"
+                      : "bg-gray-50 border-gray-200 shadow-lg"
                   } border backdrop-blur-sm`}
                 >
                   <h3
@@ -562,7 +574,7 @@ export const Profile = () => {
                       className={`p-4 rounded-xl flex flex-col items-center ${
                         darkMode
                           ? "bg-gray-600 hover:bg-gray-500 border-gray-500"
-                          : "bg-white hover:bg-gray-200 border-gray-300"
+                          : "bg-white hover:bg-gray-100 border-gray-300"
                       } border transition-colors shadow-sm`}
                     >
                       <div
@@ -593,7 +605,7 @@ export const Profile = () => {
                       className={`p-4 rounded-xl flex flex-col items-center ${
                         darkMode
                           ? "bg-red-900/30 hover:bg-red-800/30 border-red-800"
-                          : "bg-red-100 hover:bg-red-200 border-red-200"
+                          : "bg-red-50 hover:bg-red-100 border-red-200"
                       } border transition-colors shadow-sm`}
                     >
                       <div
@@ -631,8 +643,8 @@ export const Profile = () => {
               className={`rounded-2xl p-6 ${
                 darkMode
                   ? "bg-gray-800/80 border-gray-700"
-                  : "bg-white/90 border-gray-200"
-              } border backdrop-blur-lg shadow-xl`}
+                  : "bg-white/90 border-gray-200 shadow-xl"
+              } border backdrop-blur-lg`}
             >
               <h2
                 className={`text-xl font-bold mb-6 ${
@@ -649,7 +661,7 @@ export const Profile = () => {
                   className={`p-6 rounded-xl ${
                     darkMode
                       ? "bg-gray-700/80 border-gray-600"
-                      : "bg-gray-100 border-gray-200"
+                      : "bg-gray-50 border-gray-200 shadow-lg"
                   } border backdrop-blur-sm`}
                 >
                   <div className="flex justify-between items-start mb-6">
@@ -699,7 +711,7 @@ export const Profile = () => {
                   className={`p-6 rounded-xl ${
                     darkMode
                       ? "bg-gray-700/80 border-gray-600"
-                      : "bg-gray-100 border-gray-200"
+                      : "bg-gray-50 border-gray-200 shadow-lg"
                   } border backdrop-blur-sm`}
                 >
                   <div className="flex justify-between items-start mb-6">
@@ -747,7 +759,7 @@ export const Profile = () => {
                   className={`p-6 rounded-xl ${
                     darkMode
                       ? "bg-gray-700/80 border-gray-600"
-                      : "bg-gray-100 border-gray-200"
+                      : "bg-gray-50 border-gray-200 shadow-lg"
                   } border backdrop-blur-sm`}
                 >
                   <div className="flex justify-between items-start mb-6">
@@ -772,7 +784,7 @@ export const Profile = () => {
                         darkMode ? "bg-green-900/30" : "bg-green-100"
                       } shadow-sm`}
                     >
-                      <FaShieldAlt
+                                            <FaShieldAlt
                         className={
                           darkMode ? "text-green-400" : "text-green-600"
                         }
@@ -791,6 +803,65 @@ export const Profile = () => {
                   </div>
                 </motion.div>
               </div>
+
+              {/* Additional Stats Section */}
+              <motion.div
+                variants={cardVariants}
+                className={`p-6 rounded-xl ${
+                  darkMode
+                    ? "bg-gray-700/80 border-gray-600"
+                    : "bg-gray-50 border-gray-200 shadow-lg"
+                } border backdrop-blur-sm`}
+              >
+                <h3
+                  className={`font-bold mb-4 ${
+                    darkMode ? "text-white" : "text-gray-900"
+                  }`}
+                >
+                  Recent Activity
+                </h3>
+                <div className="space-y-3">
+                  {[
+                    {
+                      action: "Profile updated",
+                      time: "2 hours ago",
+                      icon: <FaUser className={darkMode ? "text-purple-400" : "text-purple-600"} />,
+                      color: darkMode ? "bg-purple-900/30" : "bg-purple-100",
+                    },
+                    {
+                      action: "Password changed",
+                      time: "1 day ago",
+                      icon: <FaKey className={darkMode ? "text-amber-400" : "text-amber-600"} />,
+                      color: darkMode ? "bg-amber-900/30" : "bg-amber-100",
+                    },
+                    {
+                      action: "Email verified",
+                      time: "3 days ago",
+                      icon: <FaEnvelope className={darkMode ? "text-blue-400" : "text-blue-600"} />,
+                      color: darkMode ? "bg-blue-900/30" : "bg-blue-100",
+                    },
+                  ].map((activity, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center space-x-4 p-3 rounded-lg ${
+                        darkMode ? "hover:bg-gray-600/50" : "hover:bg-gray-100"
+                      } transition-colors`}
+                    >
+                      <div className={`p-2 rounded-lg ${activity.color}`}>
+                        {activity.icon}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`font-medium ${darkMode ? "text-white" : "text-gray-900"}`}>
+                          {activity.action}
+                        </p>
+                        <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
+                          {activity.time}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -802,12 +873,14 @@ export const Profile = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+              onClick={() => setShowSecurityModal(false)}
             >
               <motion.div
                 initial={{ scale: 0.95, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
                 className={`rounded-2xl p-6 w-full max-w-md ${
                   darkMode
                     ? "bg-gray-800 border-gray-700"
@@ -825,7 +898,7 @@ export const Profile = () => {
                 <div className="space-y-4 mb-6">
                   <div>
                     <label
-                      className={`block mb-2 ${
+                      className={`block mb-2 text-sm font-medium ${
                         darkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -833,17 +906,18 @@ export const Profile = () => {
                     </label>
                     <input
                       type="password"
+                      placeholder="Enter current password"
                       className={`w-full px-4 py-3 rounded-xl ${
                         darkMode
-                          ? "bg-gray-700 text-white border-gray-600"
-                          : "bg-white text-gray-900 border-gray-300"
+                          ? "bg-gray-700 text-white border-gray-600 placeholder-gray-500"
+                          : "bg-white text-gray-900 border-gray-300 placeholder-gray-400"
                       } 
                         border focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
                     />
                   </div>
                   <div>
                     <label
-                      className={`block mb-2 ${
+                      className={`block mb-2 text-sm font-medium ${
                         darkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -851,17 +925,18 @@ export const Profile = () => {
                     </label>
                     <input
                       type="password"
+                      placeholder="Enter new password"
                       className={`w-full px-4 py-3 rounded-xl ${
                         darkMode
-                          ? "bg-gray-700 text-white border-gray-600"
-                          : "bg-white text-gray-900 border-gray-300"
+                          ? "bg-gray-700 text-white border-gray-600 placeholder-gray-500"
+                          : "bg-white text-gray-900 border-gray-300 placeholder-gray-400"
                       } 
                         border focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
                     />
                   </div>
                   <div>
                     <label
-                      className={`block mb-2 ${
+                      className={`block mb-2 text-sm font-medium ${
                         darkMode ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
@@ -869,13 +944,45 @@ export const Profile = () => {
                     </label>
                     <input
                       type="password"
+                      placeholder="Confirm new password"
                       className={`w-full px-4 py-3 rounded-xl ${
                         darkMode
-                          ? "bg-gray-700 text-white border-gray-600"
-                          : "bg-white text-gray-900 border-gray-300"
+                          ? "bg-gray-700 text-white border-gray-600 placeholder-gray-500"
+                          : "bg-white text-gray-900 border-gray-300 placeholder-gray-400"
                       } 
                         border focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all`}
                     />
+                  </div>
+
+                  {/* Password Strength Indicator */}
+                  <div className={`p-3 rounded-lg ${
+                    darkMode ? "bg-gray-700/50" : "bg-gray-50"
+                  }`}>
+                    <p className={`text-xs font-medium mb-2 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}>
+                      Password must contain:
+                    </p>
+                    <ul className={`text-xs space-y-1 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}>
+                      <li className="flex items-center space-x-2">
+                        <span className="text-green-500">✓</span>
+                        <span>At least 8 characters</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className={darkMode ? "text-gray-600" : "text-gray-400"}>○</span>
+                        <span>One uppercase letter</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className={darkMode ? "text-gray-600" : "text-gray-400"}>○</span>
+                        <span>One number</span>
+                      </li>
+                      <li className="flex items-center space-x-2">
+                        <span className={darkMode ? "text-gray-600" : "text-gray-400"}>○</span>
+                        <span>One special character</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
@@ -884,19 +991,22 @@ export const Profile = () => {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setShowSecurityModal(false)}
-                    className={`px-4 py-2 rounded-xl ${
+                    className={`px-5 py-2.5 rounded-xl ${
                       darkMode
-                        ? "bg-gray-700 hover:bg-gray-600"
-                        : "bg-gray-200 hover:bg-gray-300"
-                    } transition-colors`}
+                        ? "bg-gray-700 hover:bg-gray-600 text-white"
+                        : "bg-gray-200 hover:bg-gray-300 text-gray-900"
+                    } transition-colors font-medium`}
                   >
                     Cancel
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => setShowSecurityModal(false)}
-                    className={`px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white transition-colors shadow-md`}
+                    onClick={() => {
+                      // Add password update logic here
+                      setShowSecurityModal(false);
+                    }}
+                    className={`px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white transition-colors shadow-md font-medium`}
                   >
                     Update Password
                   </motion.button>

@@ -1,8 +1,10 @@
 import { FaGithub, FaDiscord, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useTheme } from "../Context/ThemeContext.jsx";
 
 export const Footer = () => {
+  const { darkMode } = useTheme();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +54,7 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-800 text-white py-12 px-4 z-40">
+    <footer className={`${darkMode ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-900"} py-12 px-4 z-40 transition-colors duration-300`}>
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand info */}
@@ -60,7 +62,7 @@ export const Footer = () => {
             <div className="flex items-center space-x-2 mb-4">
               <span className="font-bold text-xl">Gamify</span>
             </div>
-            <p className="text-gray-400">
+            <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
               An open-source platform to gamify productivity, collaboration, and
               community engagement.
             </p>
@@ -75,7 +77,7 @@ export const Footer = () => {
               <li>
                 <Link
                   to="/"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   Home
                 </Link>
@@ -83,7 +85,7 @@ export const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   About
                 </Link>
@@ -91,7 +93,7 @@ export const Footer = () => {
               <li>
                 <Link
                   to="/contact"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   Contact
                 </Link>
@@ -99,7 +101,7 @@ export const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   Documentation
                 </a>
@@ -115,8 +117,10 @@ export const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="#"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  href="https://github.com/GollaBharath/Gamify"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   GitHub Repository
                 </a>
@@ -124,7 +128,7 @@ export const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   API Documentation
                 </a>
@@ -132,7 +136,7 @@ export const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   Community Forum
                 </a>
@@ -140,7 +144,7 @@ export const Footer = () => {
               <li>
                 <a
                   href="#"
-                  className="text-gray-300 hover:text-purple-400 transition"
+                  className={`${darkMode ? "text-gray-300 hover:text-purple-400" : "text-gray-700 hover:text-purple-500"} transition`}
                 >
                   Blog
                 </a>
@@ -156,24 +160,26 @@ export const Footer = () => {
             <div className="flex space-x-4 mb-4">
               <a
                 href="#"
-                className="text-gray-400 hover:text-purple-400 transition"
+                className={`${darkMode ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-500"} transition`}
               >
                 <FaTwitter className="w-5 h-5" />
               </a>
               <a
                 href="https://github.com/GollaBharath/Gamify"
-                className="text-gray-400 hover:text-purple-400 transition"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${darkMode ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-500"} transition`}
               >
                 <FaGithub className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-purple-400 transition"
+                className={`${darkMode ? "text-gray-400 hover:text-purple-400" : "text-gray-600 hover:text-purple-500"} transition`}
               >
                 <FaDiscord className="w-5 h-5" />
               </a>
             </div>
-            <p className="text-gray-400 text-sm mb-2">
+            <p className={`${darkMode ? "text-gray-400" : "text-gray-600"} text-sm mb-2`}>
               Subscribe to our newsletter for updates
             </p>
             <form onSubmit={handleSubmit} className="mt-2">
@@ -184,12 +190,16 @@ export const Footer = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="px-3 py-2 bg-gray-700 text-white rounded-l focus:outline-none focus:ring-1 focus:ring-purple-500 w-full"
+                  className={`px-3 py-2 ${
+                    darkMode 
+                      ? "bg-gray-700 text-white border-gray-600" 
+                      : "bg-white text-gray-900 border-gray-300"
+                  } border rounded-l focus:outline-none focus:ring-1 focus:ring-purple-500 w-full transition-colors`}
                 />
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-r transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-r transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "..." : "Subscribe"}
                 </button>
@@ -209,7 +219,7 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <div className={`border-t ${darkMode ? "border-gray-700" : "border-gray-300"} mt-8 pt-8 text-center ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
           <p>
             &copy; {new Date().getFullYear()} Gamify Platform. Open-source under
             MIT License.
