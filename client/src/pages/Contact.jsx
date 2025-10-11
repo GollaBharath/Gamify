@@ -14,9 +14,10 @@ import {
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { useTheme } from "../Context/ThemeContext.jsx";
 
 export const Contact = () => {
+  const { darkMode } = useTheme();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -134,38 +135,81 @@ export const Contact = () => {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white pt-24 pb-20 px-4 overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <section className={`min-h-screen ${
+      darkMode 
+        ? "bg-gradient-to-br from-gray-900 to-gray-800 text-white" 
+        : "bg-gradient-to-br from-gray-50 to-white text-gray-900"
+    } pt-24 pb-20 px-4 overflow-hidden transition-colors duration-300`}>
+      {/* 3D Background */}
+      <div className={`absolute inset-0 overflow-hidden pointer-events-none ${darkMode ? 'opacity-70' : 'opacity-100'}`}>
         <Canvas>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
+          <ambientLight intensity={darkMode ? 0.5 : 2.0} />
+          <pointLight position={[10, 10, 10]} intensity={darkMode ? 1 : 3.0} />
+          <pointLight position={[-10, -10, -10]} intensity={darkMode ? 0.5 : 2.5} />
+          <pointLight position={[0, 5, 5]} intensity={darkMode ? 0.5 : 2.0} color="#8b5cf6" />
           <OrbitControls
             enableZoom={false}
             enablePan={false}
             autoRotate
-            autoRotateSpeed={0.5}
+            autoRotateSpeed={darkMode ? 0.5 : 1.5}
           />
           <Stars
             radius={100}
             depth={50}
-            count={5000}
-            factor={4}
-            saturation={0}
+            count={darkMode ? 5000 : 10000}
+            factor={darkMode ? 4 : 8}
+            saturation={darkMode ? 0 : 0.4}
             fade
-            speed={1}
+            speed={darkMode ? 1 : 2.5}
           />
-          {/* {shapes.map((shape, index) => (
-            <mesh key={index} position={shape.position}>
-              <boxGeometry args={shape.size} />
-              <meshStandardMaterial
-                color={shape.color}
-                emissive={shape.color}
-                emissiveIntensity={0.2}
-              />
-            </mesh>
-          ))} */}
+          {!darkMode && (
+            <Stars
+              radius={80}
+              depth={40}
+              count={5000}
+              factor={5}
+              saturation={0.6}
+              fade
+              speed={2}
+            />
+          )}
         </Canvas>
       </div>
+
+      {/* Additional floating particles - More visible in light mode */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {Array.from({ length: darkMode ? 30 : 60 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className={`absolute rounded-full ${
+              darkMode ? "bg-purple-500" : "bg-gradient-to-br from-purple-400 to-pink-400"
+            }`}
+            style={{
+              width: darkMode ? `${Math.random() * 5 + 2}px` : `${Math.random() * 8 + 3}px`,
+              height: darkMode ? `${Math.random() * 5 + 2}px` : `${Math.random() * 8 + 3}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -50, 0],
+              x: [0, Math.random() * 20 - 10, 0],
+              opacity: darkMode ? [0.2, 0.8, 0.2] : [0.4, 1, 0.4],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: Math.random() * 6 + 4,
+              repeat: Infinity,
+              delay: Math.random() * 3,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Gradient overlay for light mode */}
+      {!darkMode && (
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/20 via-transparent to-pink-50/15 pointer-events-none z-0" />
+      )}
 
       <div className="container mx-auto max-w-6xl relative z-10">
         <motion.div
@@ -182,7 +226,7 @@ export const Contact = () => {
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
+            className={`text-xl md:text-2xl ${darkMode ? "text-gray-300" : "text-gray-600"} max-w-3xl mx-auto`}
           >
             We'd love to hear from you! Whether you have a question, feedback,
             or just want to say hello.
@@ -193,7 +237,11 @@ export const Contact = () => {
           {/* Contact Form */}
           <motion.div
             variants={itemVariants}
-            className="bg-gray-800/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-gray-700/50"
+            className={`${
+              darkMode 
+                ? "bg-gray-800/80 border-gray-700/50" 
+                : "bg-white/80 border-purple-200 shadow-2xl shadow-purple-100/50"
+            } backdrop-blur-md p-8 rounded-2xl border transition-colors duration-300`}
           >
             <h2 className="text-3xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">
               Send Us a Message
@@ -205,14 +253,18 @@ export const Contact = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="mb-6 p-4 bg-green-900/50 border border-green-500 rounded-lg flex items-center"
+                  className={`mb-6 p-4 ${
+                    darkMode 
+                      ? "bg-green-900/50 border-green-500" 
+                      : "bg-green-100 border-green-400"
+                  } border rounded-lg flex items-center transition-colors duration-300`}
                 >
-                  <FaCheckCircle className="text-green-400 mr-3 text-xl" />
+                  <FaCheckCircle className={`${darkMode ? "text-green-400" : "text-green-600"} mr-3 text-xl`} />
                   <div>
-                    <h3 className="font-semibold text-green-100">
+                    <h3 className={`font-semibold ${darkMode ? "text-green-100" : "text-green-800"}`}>
                       Message Sent!
                     </h3>
-                    <p className="text-green-200 text-sm">
+                    <p className={`text-sm ${darkMode ? "text-green-200" : "text-green-700"}`}>
                       We'll get back to you soon.
                     </p>
                   </div>
@@ -229,7 +281,7 @@ export const Contact = () => {
               >
                 <label
                   htmlFor="name"
-                  className="block mb-2 text-gray-300 font-medium"
+                  className={`block mb-2 font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}
                 >
                   Your Name
                 </label>
@@ -239,8 +291,12 @@ export const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`w-full px-5 py-3 bg-gray-700/50 border ${
-                    errors.name ? "border-red-500" : "border-gray-600"
+                  className={`w-full px-5 py-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 border-gray-600 text-white" 
+                      : "bg-white border-gray-300 text-gray-900"
+                  } border ${
+                    errors.name ? "border-red-500" : ""
                   } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                   placeholder="John Doe"
                 />
@@ -257,7 +313,7 @@ export const Contact = () => {
               >
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-gray-300 font-medium"
+                  className={`block mb-2 font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}
                 >
                   Your Email
                 </label>
@@ -267,8 +323,12 @@ export const Contact = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-5 py-3 bg-gray-700/50 border ${
-                    errors.email ? "border-red-500" : "border-gray-600"
+                  className={`w-full px-5 py-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 border-gray-600 text-white" 
+                      : "bg-white border-gray-300 text-gray-900"
+                  } border ${
+                    errors.email ? "border-red-500" : ""
                   } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                   placeholder="john@example.com"
                 />
@@ -285,7 +345,7 @@ export const Contact = () => {
               >
                 <label
                   htmlFor="message"
-                  className="block mb-2 text-gray-300 font-medium"
+                  className={`block mb-2 font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}
                 >
                   Your Message
                 </label>
@@ -295,8 +355,12 @@ export const Contact = () => {
                   rows="5"
                   value={formData.message}
                   onChange={handleChange}
-                  className={`w-full px-5 py-3 bg-gray-700/50 border ${
-                    errors.message ? "border-red-500" : "border-gray-600"
+                  className={`w-full px-5 py-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 border-gray-600 text-white" 
+                      : "bg-white border-gray-300 text-gray-900"
+                  } border ${
+                    errors.message ? "border-red-500" : ""
                   } rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                   placeholder="What would you like to say?"
                 ></textarea>
@@ -310,7 +374,7 @@ export const Contact = () => {
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className={`w-full px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 ${
+                className={`w-full px-6 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 transition-all duration-300 text-white ${
                   isSubmitting
                     ? "bg-purple-700 cursor-not-allowed"
                     : "bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600"
@@ -338,7 +402,11 @@ export const Contact = () => {
           {/* Contact Info */}
           <motion.div
             variants={itemVariants}
-            className="bg-gray-800/80 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-gray-700/50"
+            className={`${
+              darkMode 
+                ? "bg-gray-800/80 border-gray-700/50" 
+                : "bg-white/80 border-purple-200 shadow-2xl shadow-purple-100/50"
+            } backdrop-blur-md p-8 rounded-2xl border transition-colors duration-300`}
           >
             <h2 className="text-3xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">
               Contact Information
@@ -347,22 +415,32 @@ export const Contact = () => {
             <div className="space-y-8">
               <motion.div
                 whileHover={{ x: 5 }}
-                className="flex items-start space-x-6 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all duration-300"
+                className={`flex items-start space-x-6 p-4 ${
+                  darkMode 
+                    ? "bg-gray-700/30 hover:bg-gray-700/50" 
+                    : "bg-purple-50/50 hover:bg-purple-100/50"
+                } rounded-xl transition-all duration-300`}
               >
-                <div className="p-3 bg-purple-500/10 rounded-lg">
-                  <FaEnvelope className="text-2xl text-purple-400" />
+                <div className={`p-3 ${
+                  darkMode ? "bg-purple-500/10" : "bg-purple-100"
+                } rounded-lg`}>
+                  <FaEnvelope className={`text-2xl ${darkMode ? "text-purple-400" : "text-purple-600"}`} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-100 mb-1">
+                  <h3 className={`font-bold text-lg mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
                     Email Us
                   </h3>
                   <a
                     href="mailto:contact@gamify.example"
-                    className="text-purple-300 hover:text-purple-200 transition-colors duration-300"
+                    className={`${
+                      darkMode 
+                        ? "text-purple-300 hover:text-purple-200" 
+                        : "text-purple-600 hover:text-purple-700"
+                    } transition-colors duration-300`}
                   >
                     contact@gamify.example
                   </a>
-                  <p className="text-gray-400 text-sm mt-2">
+                  <p className={`text-sm mt-2 ${darkMode ? "text-gray-400" : "text-gray-600"}`}>
                     Typically respond within 24 hours
                   </p>
                 </div>
@@ -370,19 +448,29 @@ export const Contact = () => {
 
               <motion.div
                 whileHover={{ x: 5 }}
-                className="flex items-start space-x-6 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all duration-300"
+                className={`flex items-start space-x-6 p-4 ${
+                  darkMode 
+                    ? "bg-gray-700/30 hover:bg-gray-700/50" 
+                    : "bg-pink-50/50 hover:bg-pink-100/50"
+                } rounded-xl transition-all duration-300`}
               >
-                <div className="p-3 bg-pink-500/10 rounded-lg">
-                  <FaMapMarkerAlt className="text-2xl text-pink-400" />
+                <div className={`p-3 ${
+                  darkMode ? "bg-pink-500/10" : "bg-pink-100"
+                } rounded-lg`}>
+                  <FaMapMarkerAlt className={`text-2xl ${darkMode ? "text-pink-400" : "text-pink-600"}`} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-100 mb-1">
+                  <h3 className={`font-bold text-lg mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
                     Our Location
                   </h3>
-                  <p className="text-gray-300">
+                  <p className={darkMode ? "text-gray-300" : "text-gray-700"}>
                     Remote-first team with contributors worldwide
                   </p>
-                  <button className="mt-3 text-sm text-purple-300 hover:text-purple-200 transition-colors duration-300 flex items-center">
+                  <button className={`mt-3 text-sm ${
+                    darkMode 
+                      ? "text-purple-300 hover:text-purple-200" 
+                      : "text-purple-600 hover:text-purple-700"
+                  } transition-colors duration-300 flex items-center`}>
                     View on map <span className="ml-1">→</span>
                   </button>
                 </div>
@@ -390,22 +478,28 @@ export const Contact = () => {
 
               <motion.div
                 whileHover={{ x: 5 }}
-                className="flex items-start space-x-6 p-4 bg-gray-700/30 rounded-xl hover:bg-gray-700/50 transition-all duration-300"
+                className={`flex items-start space-x-6 p-4 ${
+                  darkMode 
+                    ? "bg-gray-700/30 hover:bg-gray-700/50" 
+                    : "bg-blue-50/50 hover:bg-blue-100/50"
+                } rounded-xl transition-all duration-300`}
               >
-                <div className="p-3 bg-blue-500/10 rounded-lg">
-                  <FaDiscord className="text-2xl text-blue-400" />
+                <div className={`p-3 ${
+                  darkMode ? "bg-blue-500/10" : "bg-blue-100"
+                } rounded-lg`}>
+                  <FaDiscord className={`text-2xl ${darkMode ? "text-blue-400" : "text-blue-600"}`} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-gray-100 mb-1">
+                  <h3 className={`font-bold text-lg mb-1 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
                     Community Support
                   </h3>
-                  <p className="text-gray-300 mb-3">
+                  <p className={`mb-3 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
                     Join our active community for real-time support and
                     discussions
                   </p>
                   <a
                     href="#"
-                    className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors duration-300"
+                    className="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-300"
                   >
                     <FaDiscord className="mr-2" /> Join Discord
                   </a>
@@ -413,10 +507,130 @@ export const Contact = () => {
               </motion.div>
             </div>
 
-          
-           
+            {/* Social Media Links */}
+            <div className="mt-12">
+              <h3 className={`text-xl font-bold mb-4 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+                Follow Us
+              </h3>
+              <div className="flex space-x-4">
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 hover:bg-purple-600" 
+                      : "bg-purple-100 hover:bg-purple-200"
+                  } rounded-lg transition-all duration-300`}
+                >
+                  <FaGithub className={`text-xl ${darkMode ? "text-gray-300" : "text-gray-700"}`} />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 hover:bg-blue-600" 
+                      : "bg-blue-100 hover:bg-blue-200"
+                  } rounded-lg transition-all duration-300`}
+                >
+                  <FaTwitter className={`text-xl ${darkMode ? "text-gray-300" : "text-gray-700"}`} />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 hover:bg-indigo-600" 
+                      : "bg-indigo-100 hover:bg-indigo-200"
+                  } rounded-lg transition-all duration-300`}
+                >
+                  <FaDiscord className={`text-xl ${darkMode ? "text-gray-300" : "text-gray-700"}`} />
+                </motion.a>
+                <motion.a
+                  href="#"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`p-3 ${
+                    darkMode 
+                      ? "bg-gray-700/50 hover:bg-blue-700" 
+                      : "bg-blue-100 hover:bg-blue-200"
+                  } rounded-lg transition-all duration-300`}
+                >
+                  <FaLinkedin className={`text-xl ${darkMode ? "text-gray-300" : "text-gray-700"}`} />
+                </motion.a>
+              </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className={`mt-8 p-4 ${
+              darkMode 
+                ? "bg-purple-900/20 border-purple-500/30" 
+                : "bg-purple-50 border-purple-200"
+            } border rounded-lg`}>
+              <h4 className={`font-semibold mb-2 ${darkMode ? "text-purple-300" : "text-purple-800"}`}>
+                💡 Quick Tip
+              </h4>
+              <p className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                For urgent technical issues, please use our GitHub Issues page
+                or join our Discord community for immediate assistance.
+              </p>
+            </div>
           </motion.div>
         </div>
+
+        {/* FAQ Section */}
+        <motion.div
+          variants={itemVariants}
+          className={`mt-16 ${
+            darkMode 
+              ? "bg-gray-800/80 border-gray-700/50" 
+              : "bg-white/80 border-purple-200 shadow-2xl shadow-purple-100/50"
+          } backdrop-blur-md p-8 rounded-2xl border transition-colors duration-300`}
+        >
+          <h2 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-500">
+            Frequently Asked Questions
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className={`font-bold mb-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+                How quickly do you respond?
+              </h3>
+              <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+                We typically respond to all inquiries within 24-48 hours during
+                business days.
+              </p>
+            </div>
+            <div>
+              <h3 className={`font-bold mb-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+                Do you offer support?
+              </h3>
+              <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+                Yes! We offer community support via Discord and email support
+                for all users.
+              </p>
+            </div>
+            <div>
+              <h3 className={`font-bold mb-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+                Can I contribute to the project?
+              </h3>
+              <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+                Absolutely! Visit our GitHub repository to get started with
+                contributions.
+              </p>
+            </div>
+            <div>
+              <h3 className={`font-bold mb-2 ${darkMode ? "text-gray-100" : "text-gray-900"}`}>
+                Is Gamify really free?
+              </h3>
+              <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+                Yes! Gamify is 100% free and open-source under the MIT license.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

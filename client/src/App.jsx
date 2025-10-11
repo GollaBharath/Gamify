@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext.jsx";
+import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
 import { Navbar } from "./components/Navbar.jsx";
 import { Footer } from "./components/Footer.jsx";
@@ -15,32 +16,34 @@ import Chatbot from "./components/chatbot.jsx";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ScrollToTop /> {/* Always keep this inside Router */}
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
+    <ThemeProvider>
+      <AuthProvider>
+        <ScrollToTop />
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/register" element={<RegisterForm />} />
 
-            {/* Protected section */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/profile" element={<Profile />} />
-            </Route>
+              {/* Protected section */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard/profile" element={<Profile />} />
+              </Route>
 
-            {/* Fallback */}
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </main>
-        <Footer />
-        <ScrollToTopButton />
-        <Chatbot />
-      </div>
-    </AuthProvider>
+              {/* Fallback */}
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </main>
+          <Footer />
+          <ScrollToTopButton />
+          <Chatbot />
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
