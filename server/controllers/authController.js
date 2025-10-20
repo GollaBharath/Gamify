@@ -5,12 +5,18 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET || "changeme-super-secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
+// Utility to sign JWT
 const signToken = (id) =>
   jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
-const normalizeInput = (str, lower = false) =>
-  str?.toString().trim()[lower ? "toLowerCase" : "toString"]?.() ?? null;
+// Utility to normalize string inputs
+const normalizeInput = (str, lower = false) => {
+  if (!str) return null;
+  const value = str.toString().trim();
+  return lower ? value.toLowerCase() : value;
+};
 
+// Helper to build response structure
 const buildUserResponse = (user, token) => ({
   success: true,
   token,
@@ -22,6 +28,7 @@ const buildUserResponse = (user, token) => ({
   },
 });
 
+// Register controller
 export const register = async (req, res) => {
   try {
     const { username: rawUsername, email: rawEmail, password } = req.body;
@@ -35,26 +42,31 @@ export const register = async (req, res) => {
         .json({ success: false, message: "All fields are required" });
     }
 
-    const existing = await User.findOne({ $or: [{ email }, { username }] });
-    if (existing) {
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
       return res
         .status(400)
         .json({ success: false, message: "User already exists" });
     }
 
-    const hash = await bcrypt.hash(password, 12);
-    const user = await User.create({ username, email, password: hash });
-    const token = signToken(user._id);
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-    res.status(201).json(buildUserResponse(user, token));
-  } catch (err) {
-    console.error("Registration error:", err);
-    res
+    const token = signToken(user._id);
+    return res.status(201).json(buildUserResponse(user, token));
+  } catch (error) {
+    console.error("Registration error:", error);
+    return res
       .status(500)
       .json({ success: false, message: "Server error during registration" });
   }
 };
 
+// Login controller
 export const login = async (req, res) => {
   try {
     const { email: rawEmail, password } = req.body;
@@ -73,18 +85,18 @@ export const login = async (req, res) => {
         .json({ success: false, message: "Invalid credentials" });
     }
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) {
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
     }
 
     const token = signToken(user._id);
-    res.json(buildUserResponse(user, token));
-  } catch (err) {
-    console.error("Login error:", err);
-    res
+    return res.json(buildUserResponse(user, token));
+  } catch (error) {
+    console.error("Login error:", error);
+    return res
       .status(500)
       .json({ success: false, message: "Server error during login" });
   }
