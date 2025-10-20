@@ -1,26 +1,27 @@
 import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
 
-const award = async (req, res) => {
-  const { userId, points, reason } = req.body;
-
-  if (!userId || !points || !reason) {
-    return res.status(400).json({
-      success: false,
-      message: "All fields are required",
-    });
-  }
-
+// ✅ Award Points to a User
+export const award = async (req, res) => {
   try {
-    const reci = await User.findById(userId);
-    if (!reci) {
+    const { userId, points, reason } = req.body;
+
+    if (!userId || !points || !reason) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const recipient = await User.findById(userId);
+    if (!recipient) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
 
-    reci.points += points;
-    await reci.save();
+    recipient.points += points;
+    await recipient.save();
 
     await Transaction.create({
       user: userId,
@@ -29,18 +30,22 @@ const award = async (req, res) => {
       reason,
       createdBy: req.user._id,
     });
-    res
+
+    return res
       .status(200)
       .json({ success: true, message: "Points awarded successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Award points error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-const getHistory = async (req, res) => {
-  const { userId } = req.query;
+// ✅ Get Transaction History
+export const getHistory = async (req, res) => {
   try {
-    let filter = {};
+    const { userId } = req.query;
+
+    const filter = {};
     if (req.user.role === "Member") {
       filter.user = req.user._id;
     } else if (userId) {
@@ -51,9 +56,13 @@ const getHistory = async (req, res) => {
       .populate("user", "username email")
       .populate("createdBy", "username email")
       .sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: transactions });
+
+    return res.status(200).json({
+      success: true,
+      data: transactions,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Get transaction history error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
-export { award, getHistory };
