@@ -5,11 +5,10 @@ import {
   sendBulkNewsletter,
 } from "../services/emailService.js";
 
-// ✅ Subscribe
+// ✅ Subscribe to Newsletter
 export const subscribe = async (req, res) => {
   try {
     const { email } = req.body;
-
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
     }
@@ -19,15 +18,14 @@ export const subscribe = async (req, res) => {
     if (subscriber) {
       if (subscriber.isSubscribed) {
         return res.status(400).json({ error: "Email is already subscribed" });
-      } else {
-        subscriber.isSubscribed = true;
-        subscriber.subscribedAt = new Date();
-        subscriber.unsubscribedAt = null;
-        await subscriber.save();
       }
-    } else {
-      subscriber = new Newsletter({ email });
+
+      subscriber.isSubscribed = true;
+      subscriber.subscribedAt = new Date();
+      subscriber.unsubscribedAt = null;
       await subscriber.save();
+    } else {
+      subscriber = await Newsletter.create({ email });
     }
 
     const unsubscribeToken = generateUnsubscribeToken(email);
@@ -36,26 +34,27 @@ export const subscribe = async (req, res) => {
     )}/api/newsletter/unsubscribe?token=${unsubscribeToken}&email=${email}`;
 
     const emailSent = await sendConfirmationEmail(email, unsubscribeLink);
-
     if (!emailSent) {
       return res
         .status(500)
         .json({ error: "Failed to send confirmation email" });
     }
 
-    res.status(200).json({ message: "Successfully subscribed to newsletter" });
+    return res
+      .status(200)
+      .json({ message: "Successfully subscribed to newsletter" });
   } catch (error) {
     console.error("Subscription error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// ✅ Unsubscribe
+// ✅ Unsubscribe from Newsletter
 export const unsubscribe = async (req, res) => {
   try {
     const { token, email } = req.query;
-
     const expectedToken = generateUnsubscribeToken(email);
+
     if (token !== expectedToken) {
       return res.status(400).json({ error: "Invalid unsubscribe link" });
     }
@@ -69,21 +68,29 @@ export const unsubscribe = async (req, res) => {
     subscriber.unsubscribedAt = new Date();
     await subscriber.save();
 
-    res
+    return res
       .status(200)
       .json({ message: "Successfully unsubscribed from newsletter" });
   } catch (error) {
     console.error("Unsubscribe error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// ✅ Send Newsletter
+// ✅ Send Newsletter to Subscribers
 export const sendNewsletter = async (req, res) => {
   try {
     const { subject, content } = req.body;
+    if (!subject || !content) {
+      return res
+        .status(400)
+        .json({ error: "Subject and content are required" });
+    }
 
     const subscribers = await Newsletter.find({ isSubscribed: true });
+    if (!subscribers.length) {
+      return res.status(400).json({ error: "No active subscribers found" });
+    }
 
     const generateUnsubscribeLink = (email) => {
       const token = generateUnsubscribeToken(email);
@@ -99,22 +106,22 @@ export const sendNewsletter = async (req, res) => {
       generateUnsubscribeLink
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       message: `Newsletter sent to ${subscribers.length} subscribers`,
     });
   } catch (error) {
     console.error("Send newsletter error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// ✅ Get Subscriber Count
+// ✅ Get Total Subscriber Count
 export const getSubscriberCount = async (req, res) => {
   try {
     const count = await Newsletter.countDocuments({ isSubscribed: true });
-    res.status(200).json({ count });
+    return res.status(200).json({ count });
   } catch (error) {
     console.error("Get subscriber count error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
