@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Attach token to axios
   function applyAuthHeader(nextToken) {
@@ -51,85 +53,34 @@ export const AuthProvider = ({ children }) => {
     applyAuthHeader(token);
 
     // 401 → auto logout
-    const respInterceptor = api.interceptors.response.use(
-      (res) => res,
-      (err) => {
-        if (err?.response?.status === 401) {
-          logout(); // token invalid/expired
-        }
-        return Promise.reject(err);
+    api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        const message = error?.response?.data?.message || "An error occurred";
+        toast.error(message, { position: "top-right" });
+        return Promise.reject(error);
       }
     );
-
-    return () => {
-      api.interceptors.response.eject(respInterceptor);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Load user
-  const loadUser = async (providedToken) => {
-    try {
-      const active = providedToken ?? token;
-      if (!active) {
-        setUser(null);
-        return;
+    // Enhance login error handling
+    const login = async ({ email, password }) => {
+      setIsAuthenticating(true);
+      try {
+        const res = await api.post("/api/auth/login", { email, password });
+        const nextToken = res.data.token;
+        setToken(nextToken);
+        applyAuthHeader(nextToken);
+        await loadUser(nextToken);
+        toast.success("Login successful!", { position: "top-right" });
+        return { success: true };
+      } catch (error) {
+        const message = error?.response?.data?.message || "Login failed";
+        toast.error(message, { position: "top-right" });
+        return { success: false, message };
+      } finally {
+        setIsAuthenticating(false);
+        setIsLoading(false);
       }
-      applyAuthHeader(active);
-      const res = await api.get("/api/users/protected");
-      setUser(res.data.user);
-    } catch (e) {
-      // Any failure → logout (clears token)
-      logout(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Run on first load & whenever token changes
-  useEffect(() => {
-    loadUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  // Auth actions
-  const register = async ({ username, email, password }) => {
-    setIsLoading(true);
-    try {
-      const res = await api.post("/api/auth/register", {
-        username,
-        email,
-        password,
-      });
-      const nextToken = res.data.token;
-      setToken(nextToken);
-      applyAuthHeader(nextToken);
-      await loadUser(nextToken);
-      return { success: true };
-    } catch (error) {
-      const message = error?.response?.data?.message || "Registration failed";
-      return { success: false, message };
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const login = async ({ email, password }) => {
-    setIsLoading(true);
-    try {
-      const res = await api.post("/api/auth/login", { email, password });
-      const nextToken = res.data.token;
-      setToken(nextToken);
-      applyAuthHeader(nextToken);
-      await loadUser(nextToken);
-      return { success: true };
-    } catch (error) {
-      const message = error?.response?.data?.message || "Login failed";
-      return { success: false, message };
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
   const logout = (redirect = true) => {
     setUser(null);
@@ -139,15 +90,84 @@ export const AuthProvider = ({ children }) => {
   };
 
   const value = useMemo(
-    () => ({ user, token, isLoading, register, login, logout, loadUser }),
-    [user, token, isLoading]
+    () => ({
+      user,
+      isLoading,
+      isAuthenticating,
+      login,
+      register,
+      logout,
+      refreshToken
+    }),
+    [user, isLoading, isAuthenticating]
   );
   useEffect(() => {
     console.log("Current user:", user);
   }, [user]);
 
 
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+
+
+  const refreshToken = async () => {
+    try {
+      const res = await api.post("/api/auth/refresh", {
+        token: localStorage.getItem("token")
+      });
+      const nextToken = res.data.token;
+      setToken(nextToken);
+      applyAuthHeader(nextToken);
+      return nextToken;
+    } catch (error) {
+      logout(true);
+      return null;
+    }
+  };
+
+  // Add axios interceptor for token refresh
+  useEffect(() => {
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+        if (error.response && error.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const newToken = await refreshToken();
+          if (newToken) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return api(originalRequest);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => api.interceptors.response.eject(interceptor);
+  }, []);
+
+  const checkTokenExpiration = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        if (payload.exp * 1000 < Date.now()) {
+          logout(true);
+        }
+      } catch (error) {
+        logout(true);
+      }
+    }
+  };
+
+  // Add token expiration check on mount and periodically
+  useEffect(() => {
+    checkTokenExpiration();
+    const interval = setInterval(checkTokenExpiration, 60000); // Check every minute
+
+    return () => clearInterval(interval);
+  }, []);
+}
+
+// Export useAuth hook
 
 export const useAuth = () => useContext(AuthContext);

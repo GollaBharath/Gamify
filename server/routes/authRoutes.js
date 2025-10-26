@@ -36,7 +36,9 @@ const registerLimiter = rateLimit({
 // Apply rate limiters to specific routes
 router.post("/register", registerLimiter, register);
 router.post("/login", loginLimiter, login);
-
+router.post('/refresh', async (req, res) => {
+  // Add refresh token logic here
+});
 router.get("/google", passport.authenticate("google",{ scope: ["profile", "email"] }))
 
 router.get("/google/callback",
