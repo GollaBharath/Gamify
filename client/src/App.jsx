@@ -13,37 +13,41 @@ import { Profile } from "./pages/Profile.jsx";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import Chatbot from "./components/chatbot.jsx";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function App() {
   return (
-    <ThemeProvider>
+    <>
       <AuthProvider>
-        <ScrollToTop />
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/login" element={<LoginForm />} />
-              <Route path="/register" element={<RegisterForm />} />
-
-              {/* Protected section */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/dashboard/profile" element={<Profile />} />
-              </Route>
-
-              {/* Fallback */}
-              <Route path="*" element={<Home />} />
-            </Routes>
-          </main>
-          <Footer />
-          <ScrollToTopButton />
-          <Chatbot />
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+        <ThemeProvider>
+          <ScrollToTop />
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/login" element={<LoginForm />} />
+                <Route path="/register" element={<RegisterForm />} />
+    
+                {/* Protected section */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard/profile" element={<Profile />} />
+                </Route>
+    
+                {/* Fallback */}
+                <Route path="*" element={<Home />} />
+              </Routes>
+            </main>
+            <Footer />
+            <ScrollToTopButton />
+            <Chatbot />
+            <ToastContainer position="top-right" autoClose={3000} />
+          </ThemeProvider>
+        </AuthProvider>
+      </>
   );
 }
