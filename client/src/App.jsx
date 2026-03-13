@@ -1,53 +1,53 @@
-import { Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./Context/AuthContext.jsx";
-import { ThemeProvider } from "./Context/ThemeContext.jsx";
+import { Link, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./Context/AuthContext.jsx";
 import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
-import { Navbar } from "./components/Navbar.jsx";
-import { Footer } from "./components/Footer.jsx";
-import { Home } from "./components/Home.jsx";
-import { About } from "./pages/About.jsx";
-import { Contact } from "./pages/Contact.jsx";
-import { LoginForm, RegisterForm } from "./pages/AuthForms.jsx";
+import { Landing } from "./pages/Landing.jsx";
+import { AuthPage } from "./pages/AuthPage.jsx";
 import { Dashboard } from "./pages/Dashboard.jsx";
-import { Profile } from "./pages/Profile.jsx";
-import ScrollToTop from "./components/ScrollToTop";
-import ScrollToTopButton from "./components/ScrollToTopButton";
-import Chatbot from "./components/chatbot.jsx";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
+const ShellHeader = () => {
+	const { user, logout } = useAuth();
+
+	return (
+		<header className="topbar">
+			<Link className="brand" to="/">
+				<span>G</span>amify
+			</Link>
+			<nav>
+				<Link to="/">Home</Link>
+				{user ? (
+					<Link to="/dashboard">Dashboard</Link>
+				) : (
+					<Link to="/auth">Auth</Link>
+				)}
+				{user && (
+					<button type="button" onClick={logout}>
+						Logout
+					</button>
+				)}
+			</nav>
+		</header>
+	);
+};
+
+const AppRoutes = () => (
+	<>
+		<ShellHeader />
+		<Routes>
+			<Route path="/" element={<Landing />} />
+			<Route path="/auth" element={<AuthPage />} />
+			<Route element={<ProtectedRoute />}>
+				<Route path="/dashboard" element={<Dashboard />} />
+			</Route>
+			<Route path="*" element={<Landing />} />
+		</Routes>
+	</>
+);
 
 export default function App() {
-  return (
-    <>
-      <AuthProvider>
-        <ThemeProvider>
-          <ScrollToTop />
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/login" element={<LoginForm />} />
-                <Route path="/register" element={<RegisterForm />} />
-    
-                {/* Protected section */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/dashboard/profile" element={<Profile />} />
-                </Route>
-    
-                {/* Fallback */}
-                <Route path="*" element={<Home />} />
-              </Routes>
-            </main>
-            <Footer />
-            <ScrollToTopButton />
-            <Chatbot />
-            <ToastContainer position="top-right" autoClose={3000} />
-          </ThemeProvider>
-        </AuthProvider>
-      </>
-  );
+	return (
+		<AuthProvider>
+			<AppRoutes />
+		</AuthProvider>
+	);
 }

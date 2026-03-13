@@ -2,18 +2,19 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext.jsx";
 
 export const ProtectedRoute = () => {
-  const { user, isLoading } = useAuth();
+	const { isLoading, user } = useAuth();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-white">
-        Loading...
-      </div>
-    );
-  }
+	if (isLoading) {
+		return (
+			<div className="loading-screen">
+				<h2>Syncing command center...</h2>
+			</div>
+		);
+	}
 
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-  return <Outlet />;
+	if (!user) {
+		return <Navigate to="/auth" replace />;
+	}
+
+	return <Outlet />;
 };
