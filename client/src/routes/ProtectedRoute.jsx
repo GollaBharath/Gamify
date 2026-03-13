@@ -6,8 +6,9 @@ export const ProtectedRoute = () => {
 
 	if (isLoading) {
 		return (
-			<div className="loading-screen">
-				<h2>Syncing command center...</h2>
+			<div className="loading-page">
+				<div className="spinner spinner-lg" />
+				<span>Loading Gamify...</span>
 			</div>
 		);
 	}

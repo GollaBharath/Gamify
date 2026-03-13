@@ -30,18 +30,9 @@ app.set("trust proxy", 1);
 // Middlewares
 app.use(express.json());
 app.use(helmet()); // Security headers
-app.use(
-	rateLimit({
-		windowMs: 15 * 60 * 1000, // 15 minutes
-		max: 100, // Limit each IP to 100 requests per window
-	}),
-);
 
-// Request logging
-app.use(morgan("dev"));
-
-// Configurable CORS
-
+// CORS must be registered before rate limiting so that 429 responses
+// still include the Access-Control-Allow-Origin header.
 const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || [
 	"http://localhost:5173",
 	"http://localhost:5000",
@@ -54,6 +45,16 @@ app.use(
 		credentials: true,
 	}),
 );
+
+app.use(
+	rateLimit({
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		max: 100, // Limit each IP to 100 requests per window
+	}),
+);
+
+// Request logging
+app.use(morgan("dev"));
 
 app.use(
 	session({
