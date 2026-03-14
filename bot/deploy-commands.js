@@ -1,52 +1,50 @@
-require('dotenv').config();
-const fs = require('node:fs');
-const path = require('node:path');
-const { REST, Routes } = require('discord.js');
+"use strict";
 
-// Collect command JSON from files in bot/commands
+require("dotenv").config();
+
+const fs = require("node:fs");
+const path = require("node:path");
+const { REST, Routes } = require("discord.js");
+
 const commands = [];
-const commandsPath = path.join(__dirname, 'commands');
-if (fs.existsSync(commandsPath)) {
-  const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter(fileName => fileName.endsWith('.js'));
+const commandsPath = path.join(__dirname, "src", "commands");
 
-  for (const fileName of commandFiles) {
-    const filePath = path.join(commandsPath, fileName);
-    const command = require(filePath);
-    if (command && command.data && typeof command.data.toJSON === 'function') {
-      commands.push(command.data.toJSON());
-    }
-  }
+for (const file of fs
+	.readdirSync(commandsPath)
+	.filter((f) => f.endsWith(".js"))) {
+	const cmd = require(path.join(commandsPath, file));
+	if (cmd?.data?.toJSON) {
+		commands.push(cmd.data.toJSON());
+		console.log(`  + ${cmd.data.name}`);
+	}
 }
 
-const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
-  try {
-    const clientId = process.env.CLIENT_ID;
-    const guildId = process.env.GUILD_ID;
-    if (!clientId) {
-      throw new Error('CLIENT_ID is not set in environment');
-    }
+	try {
+		const clientId = process.env.DISCORD_CLIENT_ID;
+		const guildId = process.env.GUILD_ID; // Optional: set for instant guild-scoped deploy
 
-    console.log('Started refreshing application (/) commands.');
+		if (!clientId) {
+			throw new Error("DISCORD_CLIENT_ID is not set in .env");
+		}
 
-    if (guildId) {
-      await rest.put(
-        Routes.applicationGuildCommands(clientId, guildId),
-        { body: commands },
-      );
-      console.log('Successfully reloaded GUILD application (/) commands.');
-    } else {
-      await rest.put(
-        Routes.applicationCommands(clientId),
-        { body: commands },
-      );
-      console.log('Successfully reloaded GLOBAL application (/) commands.');
-    }
-  } catch (error) {
-    console.error(error);
-    process.exitCode = 1;
-  }
+		console.log(`\nDeploying ${commands.length} command(s)…`);
+
+		if (guildId) {
+			await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+				body: commands,
+			});
+			console.log(`✅  Guild commands deployed to ${guildId} (instant)`);
+		} else {
+			await rest.put(Routes.applicationCommands(clientId), { body: commands });
+			console.log(
+				"✅  Global commands deployed (may take up to 1 hour to propagate)",
+			);
+		}
+	} catch (err) {
+		console.error("❌  Deploy failed:", err);
+		process.exitCode = 1;
+	}
 })();

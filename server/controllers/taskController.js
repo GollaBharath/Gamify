@@ -74,19 +74,27 @@ export const listTasks = async (req, res) => {
 	try {
 		const { eventId, status } = req.query;
 
-		if (!eventId) {
-			return res
-				.status(400)
-				.json({ success: false, message: "eventId is required" });
+		const filter = {};
+
+		if (eventId) {
+			// Scope to a specific event
+			filter.event = eventId;
+		} else {
+			// Scope to all events in the user's organisation
+			const orgEvents = await Event.find(
+				{ organization: req.user.organization },
+				"_id",
+			).lean();
+			filter.event = { $in: orgEvents.map((e) => e._id) };
 		}
 
-		const filter = { event: eventId };
 		if (status) {
 			filter.status = status;
 		}
 
 		const tasks = await Task.find(filter)
 			.populate("createdBy", "username role")
+			.populate("event", "title status")
 			.sort({ order: 1, createdAt: 1 });
 
 		return res.status(200).json({ success: true, data: tasks });
@@ -235,12 +243,10 @@ export const reviewSubmission = async (req, res) => {
 				: parsedPointsAwarded;
 
 			if (approvedPoints < 0) {
-				return res
-					.status(400)
-					.json({
-						success: false,
-						message: "pointsAwarded cannot be negative",
-					});
+				return res.status(400).json({
+					success: false,
+					message: "pointsAwarded cannot be negative",
+				});
 			}
 
 			submission.pointsAwarded = approvedPoints;

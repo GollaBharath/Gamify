@@ -11,6 +11,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import shopRoutes from "./routes/shopRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
+import discordRoutes from "./routes/discordRoutes.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import session from "express-session";
@@ -84,6 +85,7 @@ app.get("/", (req, res) => {
 			shop: "/api/shop/*",
 			leaderboard: "/api/leaderboard/*",
 			newsletter: "/api/newsletter/*",
+			discord: "/api/discord/*",
 		},
 	});
 });
@@ -105,6 +107,7 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/shop", shopRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/discord", discordRoutes);
 
 // 404 handler
 app.use((req, res) => {

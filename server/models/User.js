@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
 		unique: true,
 		sparse: true, // allow either email-password or google-login
 	},
+	discordId: {
+		type: String,
+		unique: true,
+		sparse: true, // allow Discord-linked accounts
+	},
 	username: {
 		type: String,
 		required: true,
@@ -27,10 +32,9 @@ const userSchema = new mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: true,
 		minlength: 6,
 		required: function () {
-			return !this.googleId; //only require if not google user
+			return !this.googleId && !this.discordId; // not required for OAuth users
 		},
 	},
 	role: {
@@ -145,7 +149,7 @@ userSchema.pre("save", function (next) {
 			break;
 		case "Event Staff":
 			this.permissions = {
-				canCreateEvents: false,
+				canCreateEvents: true,
 				canManageTasks: true,
 				canAwardPoints: false,
 				canManageShop: false,
