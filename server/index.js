@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
+if (process.env.LOCAL_DEV) {
+  dotenv.config();
+}
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
@@ -20,8 +22,10 @@ import "./config/passport.js"; // load Google OAuth strategy
 import morgan from "morgan";
 import mongoose from "mongoose"; // For DB status in health check
 
-// Connect to DB
-connectDB();
+// Connect to DB - Only in local/dev mode
+if (process.env.LOCAL_DEV) {
+  connectDB();
+}
 
 const app = express();
 

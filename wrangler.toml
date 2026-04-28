@@ -1,0 +1,40 @@
+name = "gamify-frontend"
+compatibility_date = "2026-04-28"
+
+# Build configuration for a static site (Cloudflare Pages)
+# This tells Pages to build with Vite and serve the static site
+pages_build_output_dir = "client/dist"
+
+[build]
+# Command to build the frontend
+command = "npm run build"
+# Directory where the build command runs
+cwd = "client"
+# Watch paths for preview deployments
+watch = ["client/src", "client/*.{js,css,html}"]
+
+[env.preview]
+name = "gamify-frontend-preview"
+pages_build_output_dir = "client/dist"
+[env.preview.build]
+command = "npm run build"
+cwd = "client"
+
+[env.production]
+name = "gamify-frontend"
+pages_build_output_dir = "client/dist"
+[env.production.build]
+command = "npm run build"
+cwd = "client"
+
+# Environment variables - will be set in Cloudflare dashboard
+# [env.preview.vars]
+# API_URL = "https://main---gamify.pages.dev/api"
+
+# [env.production.vars]
+# API_URL = "https://gamify.pages.dev/api"
+
+# KV namespace binding for the frontend (optional, for client-side caching)
+# kv_namespaces = [
+#   { binding = "KV", id = "...", preview_id = "..." }
+# ]

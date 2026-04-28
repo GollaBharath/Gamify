@@ -1,0 +1,70 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gamify-api",
+  "compatibility_date": "2026-04-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "server/index.worker.js",
+  "node_compat": true,
+
+  "env": {
+    "production": {
+      "name": "gamify-api",
+      "vars": {
+        "NODE_ENV": "production",
+        "MONGO_URI": "@mongodb_uri",
+        "JWT_SECRET": "@jwt_secret",
+        "SESSION_SECRET": "@session_secret",
+        "EMAIL_USERNAME": "@email_username",
+        "EMAIL_PASSWORD": "@email_password",
+        "FRONTEND_URL": "https://gamify.pages.dev",
+        "CORS_ORIGINS": "https://gamify.pages.dev,https://gamify-api.pages.dev",
+        "AUTH_LOGIN_MAX": "10",
+        "AUTH_LOGIN_WINDOW_MS": "900000",
+        "AUTH_REGISTER_MAX": "5",
+        "AUTH_REGISTER_WINDOW_MS": "3600000"
+      }
+    },
+    "preview": {
+      "name": "gamify-api-preview",
+      "vars": {
+        "NODE_ENV": "preview",
+        "MONGO_URI": "@mongodb_uri",
+        "JWT_SECRET": "@jwt_secret",
+        "SESSION_SECRET": "@session_secret",
+        "EMAIL_USERNAME": "@email_username",
+        "EMAIL_PASSWORD": "@email_password",
+        "FRONTEND_URL": "https://main---gamify.pages.dev",
+        "CORS_ORIGINS": "https://main---gamify.pages.dev",
+        "AUTH_LOGIN_MAX": "10",
+        "AUTH_LOGIN_WINDOW_MS": "900000",
+        "AUTH_REGISTER_MAX": "5",
+        "AUTH_REGISTER_WINDOW_MS": "3600000"
+      }
+    }
+  },
+
+  "vars": {
+    "NODE_ENV": "development",
+    "MONGO_URI": "mongodb://localhost:27017/gamify",
+    "JWT_SECRET": "dev-secret-key-change-in-production",
+    "SESSION_SECRET": "dev-session-secret-change-in-production",
+    "EMAIL_USERNAME": "",
+    "EMAIL_PASSWORD": "",
+    "FRONTEND_URL": "http://localhost:5173",
+    "CORS_ORIGINS": "http://localhost:5173,http://localhost:5000,http://localhost:5001",
+    "AUTH_LOGIN_MAX": "10",
+    "AUTH_LOGIN_WINDOW_MS": "900000",
+    "AUTH_REGISTER_MAX": "5",
+    "AUTH_REGISTER_WINDOW_MS": "3600000"
+  },
+
+  "observability": {
+    "enabled": true
+  },
+
+  "build": {
+    "command": "npm run build",
+    "cwd": "server",
+    "watch": ["server/src", "server/*.js"]
+  }
+}
