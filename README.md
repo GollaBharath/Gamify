@@ -175,9 +175,9 @@
 
 ---
 
-## ⚙ Folder Structures
+## ⚙ Folder Structure
 
-### Frontend folder structure
+### Frontend Folder Structure
 
 ```
 client/
@@ -206,7 +206,7 @@ client/
 
 ```
 
-### Backend folder structure
+### Backend Folder Structure
 
 ```
 server/
@@ -313,7 +313,7 @@ cd bot && node index.js
 
 ## 🤝 Contributing
 
-We love contributions from the community! To contribute:
+We welcome contributions from the community! To contribute:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/your-feature`)
@@ -331,7 +331,7 @@ We are grateful to all the amazing contributors who have helped make this projec
 
 <div align="center">
 
-### 👨‍💻 Meet Our Contributors
+### 👨‍💻 Amazing Contributors
 
 [![Contributors](https://contrib.rocks/image?repo=GollaBharath/Gamify)](https://github.com/GollaBharath/Gamify/graphs/contributors)
 
