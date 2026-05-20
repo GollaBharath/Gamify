@@ -1,5 +1,6 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext.jsx";
+import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
 
 import { Landing } from "./pages/Landing.jsx";
@@ -18,8 +19,9 @@ import { NewsletterPage } from "./pages/app/NewsletterPage.jsx";
 
 export default function App() {
 	return (
-		<AuthProvider>
-			<Routes>
+		<ThemeProvider>
+			<AuthProvider>
+				<Routes>
 				{/* Public */}
 				<Route path="/" element={<Landing />} />
 				<Route path="/auth" element={<AuthPage />} />
@@ -48,6 +50,7 @@ export default function App() {
 				{/* 404 fallback */}
 				<Route path="*" element={<Navigate to="/" replace />} />
 			</Routes>
-		</AuthProvider>
+			</AuthProvider>
+		</ThemeProvider>
 	);
 }

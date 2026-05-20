@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
 
 /* ─────────────────────────────────────────────
-   DESIGN TOKENS
+   DESIGN TOKENS - DARK MODE (DEFAULT)
 ───────────────────────────────────────────── */
 :root {
 	/* Backgrounds */
@@ -48,6 +48,56 @@
 
 	--orange: #ea580c;
 	--orange-mid: #f97316;
+}
+
+/* ─────────────────────────────────────────────
+   LIGHT MODE THEME
+───────────────────────────────────────────── */
+.light {
+	/* Backgrounds */
+	--bg-base: #ffffff;
+	--bg-1: #f9fafb;
+	--bg-2: #f3f4f6;
+	--bg-3: #e5e7eb;
+	--bg-4: #d1d5db;
+
+	/* Borders */
+	--border: #e5e7eb;
+	--border-mid: #d1d5db;
+	--border-bright: #bfdbfe;
+
+	/* Text */
+	--text-1: #1f2937;
+	--text-2: #6b7280;
+	--text-3: #9ca3af;
+
+	/* Accents - remain the same */
+	--purple: #7c3aed;
+	--purple-mid: #9333ea;
+	--purple-light: #a855f7;
+	--purple-glow: rgba(124, 58, 237, 0.25);
+
+	--cyan: #0891b2;
+	--cyan-mid: #06b6d4;
+	--cyan-light: #22d3ee;
+	--cyan-glow: rgba(6, 182, 212, 0.2);
+
+	--amber: #d97706;
+	--amber-mid: #f59e0b;
+	--amber-light: #fbbf24;
+	--amber-glow: rgba(245, 158, 11, 0.2);
+
+	--green: #059669;
+	--green-mid: #10b981;
+	--green-light: #34d399;
+	--green-glow: rgba(16, 185, 129, 0.2);
+
+	--red: #dc2626;
+	--red-mid: #ef4444;
+	--red-glow: rgba(239, 68, 68, 0.2);
+
+	--orange: #ea580c;
+	--orange-mid: #f97316;
 
 	/* Typography */
 	--font-sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
@@ -62,12 +112,12 @@
 	--r-pill: 9999px;
 
 	/* Shadows */
-	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-	--shadow-xl: 0 20px 64px rgba(0, 0, 0, 0.7);
-	--shadow-purple: 0 4px 24px rgba(124, 58, 237, 0.3);
-	--shadow-cyan: 0 4px 24px rgba(6, 182, 212, 0.25);
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+	--shadow-xl: 0 20px 64px rgba(0, 0, 0, 0.2);
+	--shadow-purple: 0 4px 24px rgba(124, 58, 237, 0.15);
+	--shadow-cyan: 0 4px 24px rgba(6, 182, 212, 0.12);
 
 	/* Sidebar */
 	--sidebar-w: 256px;
@@ -112,6 +162,7 @@ body {
 		);
 	background-attachment: fixed;
 	-webkit-font-smoothing: antialiased;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {

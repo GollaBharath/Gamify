@@ -19,9 +19,12 @@ import {
 	RiCloseLine,
 	RiCoinsLine,
 	RiCalendarLine,
+	RiSunLine,
+	RiMoonLine,
 } from "react-icons/ri";
 import { api } from "../api/client.js";
 import { useAuth } from "../Context/AuthContext.jsx";
+import { useTheme } from "../Context/ThemeContext.jsx";
 
 // ── Animated counter ─────────────────────────────────────────
 const Counter = ({ end, suffix = "", duration = 1800 }) => {
@@ -52,6 +55,7 @@ const Counter = ({ end, suffix = "", duration = 1800 }) => {
 // ── Public Navbar ─────────────────────────────────────────────
 const PubNav = () => {
 	const { user } = useAuth();
+	const { darkMode, toggleDarkMode } = useTheme();
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -74,6 +78,28 @@ const PubNav = () => {
 			</div>
 
 			<div className="pub-nav-actions">
+				{/* Theme Toggle Button */}
+				<button
+					onClick={toggleDarkMode}
+					style={{
+						width: 40,
+						height: 40,
+						borderRadius: "var(--r-md)",
+						background: "var(--bg-3)",
+						border: "1px solid var(--border)",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						color: "var(--text-2)",
+						fontSize: "1.1rem",
+						cursor: "pointer",
+						transition: "all 0.3s ease",
+					}}
+					aria-label="Toggle dark/light mode"
+					title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+					{darkMode ? <RiSunLine /> : <RiMoonLine />}
+				</button>
+
 				{user ? (
 					<Link to="/app" className="btn btn-primary btn-sm">
 						Dashboard <RiArrowRightLine />
