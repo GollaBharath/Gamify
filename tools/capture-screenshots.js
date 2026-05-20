@@ -26,6 +26,9 @@ async function capture() {
       try { localStorage.setItem('theme', 'light'); } catch (e) {}
     });
     await pageLight.goto('http://localhost:5174', { waitUntil: 'networkidle' });
+    await pageLight.getByRole('button', { name: /toggle dark\/light mode/i }).click();
+    await pageLight.waitForFunction(() => document.documentElement.classList.contains('light'));
+    await pageLight.waitForLoadState('networkidle');
     await pageLight.screenshot({ path: path.join(outDir, 'light.png'), fullPage: true });
     await contextLight.close();
 
