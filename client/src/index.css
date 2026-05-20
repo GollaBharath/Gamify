@@ -48,6 +48,30 @@
 
 	--orange: #ea580c;
 	--orange-mid: #f97316;
+
+	/* Typography */
+	--font-sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+	--font-mono: "IBM Plex Mono", "Fira Code", monospace;
+
+	/* Radius */
+	--r-sm: 8px;
+	--r-md: 12px;
+	--r-lg: 16px;
+	--r-xl: 20px;
+	--r-2xl: 24px;
+	--r-pill: 9999px;
+
+	/* Shadows */
+	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+	--shadow-xl: 0 20px 64px rgba(0, 0, 0, 0.7);
+	--shadow-purple: 0 4px 24px rgba(124, 58, 237, 0.3);
+	--shadow-cyan: 0 4px 24px rgba(6, 182, 212, 0.25);
+
+	/* Sidebar */
+	--sidebar-w: 256px;
+	--sidebar-collapsed: 72px;
 }
 
 /* ─────────────────────────────────────────────
@@ -99,29 +123,13 @@
 	--orange: #ea580c;
 	--orange-mid: #f97316;
 
-	/* Typography */
-	--font-sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-	--font-mono: "IBM Plex Mono", "Fira Code", monospace;
-
-	/* Radius */
-	--r-sm: 8px;
-	--r-md: 12px;
-	--r-lg: 16px;
-	--r-xl: 20px;
-	--r-2xl: 24px;
-	--r-pill: 9999px;
-
-	/* Shadows */
+	/* Shadows - lighter for light mode */
 	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
 	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
 	--shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
 	--shadow-xl: 0 20px 64px rgba(0, 0, 0, 0.2);
 	--shadow-purple: 0 4px 24px rgba(124, 58, 237, 0.15);
 	--shadow-cyan: 0 4px 24px rgba(6, 182, 212, 0.12);
-
-	/* Sidebar */
-	--sidebar-w: 256px;
-	--sidebar-collapsed: 72px;
 }
 
 /* ─────────────────────────────────────────────
