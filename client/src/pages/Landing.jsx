@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
 	RiTrophyLine,
 	RiTaskLine,
