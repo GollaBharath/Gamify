@@ -29,6 +29,9 @@ if (process.env.LOCAL_DEV) {
 
 const app = express();
 
+// Hide Express implementation details
+app.disable("x-powered-by");
+
 // Trust proxy for accurate IP detection behind load balancers
 app.set("trust proxy", 1);
 
@@ -66,7 +69,11 @@ app.use(
 		secret: process.env.SESSION_SECRET || "supersecret",
 		resave: false,
 		saveUninitialized: false,
-		cookie: { secure: false },
+		cookie: {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax",
+		},
 	}),
 );
 
@@ -95,11 +102,18 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/health", (req, res) => {
+	const mem = process.memoryUsage();
 	res.json({
 		ok: true,
 		time: new Date().toISOString(),
 		uptime: process.uptime(),
-		db: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+		env: process.env.NODE_ENV || "development",
+		pid: process.pid,
+		memory: {
+			heapUsedMB: Math.round(mem.heapUsed / 1024 / 1024),
+			rssMB: Math.round(mem.rss / 1024 / 1024),
+		},
+		db: mongoose.connection.readyState === 1 ? (mongoose.connection.db?.databaseName || "gamify") : "disconnected",
 	});
 });
 

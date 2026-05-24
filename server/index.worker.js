@@ -27,6 +27,9 @@ import discordRoutes from "./routes/discordRoutes.js";
 // Initialize app
 const app = express();
 
+// Hide Express implementation details
+app.disable("x-powered-by");
+
 // Middlewares
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -55,7 +58,11 @@ app.use(
     secret: process.env.SESSION_SECRET || "secret",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    },
   }),
 );
 
@@ -75,10 +82,17 @@ app.get("/", (req, res) => {
 
 // Health check
 app.get("/api/health", (req, res) => {
+  const mem = process.memoryUsage();
   res.json({
     ok: true,
     time: new Date().toISOString(),
     platform: "cloudflare-workers",
+    env: process.env.NODE_ENV || "development",
+    pid: process.pid,
+    memory: {
+      heapUsedMB: Math.round(mem.heapUsed / 1024 / 1024),
+      rssMB: Math.round(mem.rss / 1024 / 1024),
+    },
   });
 });
 
