@@ -2,6 +2,21 @@
 
 require("dotenv").config();
 
+const requiredEnv = [
+	"DISCORD_TOKEN",
+	"DISCORD_CLIENT_ID",
+	"API_URL",
+	"BOT_API_KEY",
+];
+const missingEnv = requiredEnv.filter((name) => !process.env[name]);
+if (missingEnv.length) {
+	console.error(
+		"❌ Missing required bot environment variables:",
+		missingEnv.join(", "),
+	);
+	process.exit(1);
+}
+
 const fs = require("node:fs");
 const path = require("node:path");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
