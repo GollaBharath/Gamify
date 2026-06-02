@@ -61,12 +61,18 @@ app.use(
 // Request logging
 app.use(morgan("dev"));
 
+const isProduction = process.env.NODE_ENV === "production";
+
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET || "supersecret",
 		resave: false,
 		saveUninitialized: false,
-		cookie: { secure: false },
+		proxy: isProduction,
+		cookie: {
+			secure: isProduction,
+			sameSite: "lax",
+		},
 	}),
 );
 
