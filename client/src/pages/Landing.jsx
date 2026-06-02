@@ -92,22 +92,11 @@ const PubNav = () => {
 
 			{/* Mobile toggle */}
 			<button
-				style={{
-					display: "none",
-					width: 36,
-					height: 36,
-					borderRadius: "var(--r-md)",
-					background: "var(--bg-3)",
-					border: "1px solid var(--border)",
-					alignItems: "center",
-					justifyContent: "center",
-					color: "var(--text-2)",
-					fontSize: "1.1rem",
-					"@media(maxWidth:768px)": { display: "flex" },
-				}}
-				className="mobile-hamburger"
-				onClick={() => setOpen((o) => !o)}>
-				{open ? <RiCloseLine /> : <RiMenuLine />}
+              className="mobile-hamburger"
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={open}
+            >
 			</button>
 
 			{open && (
