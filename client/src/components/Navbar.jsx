@@ -82,13 +82,13 @@ export const Navbar = () => {
             ) : (
               <>
                 <Link
-                  to="/login"
+                  to="/auth"
                   className="px-4 py-2 rounded hover:bg-purple-700 transition bg-purple-600 text-white"
                 >
                   Login
                 </Link>
                 <Link
-                  to="/register"
+                  to="/auth"
                   className={`px-4 py-2 rounded transition border border-purple-500 ${
                     darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                   }`}
@@ -197,14 +197,14 @@ export const Navbar = () => {
               ) : (
                 <div className="flex flex-col space-y-3">
                   <Link
-                    to="/login"
+                    to="/auth"
                     className="px-4 py-2 rounded hover:bg-purple-700 transition bg-purple-600 text-white text-center"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link
-                    to="/register"
+                    to="/auth"
                     className={`px-4 py-2 rounded transition border border-purple-500 text-center ${
                       darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-200'
                     }`}
