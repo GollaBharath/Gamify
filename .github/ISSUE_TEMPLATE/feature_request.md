@@ -1,29 +1,32 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an improvement or new capability for this project
 title: "[Feature]: "
-labels: ""
+labels: enhancement
 assignees: ""
 ---
 
-## Where are you from?
+## Summary
 
-Mention the even you are from.
+Describe the feature or enhancement clearly and briefly.
 
-[ ] GSSoc
+## Problem
 
-[ ] OSCI
+What problem does this feature solve? Who is affected by it?
 
-## Description of the Feature
+## Proposed solution
 
-Give a detailed explanation of what you want to add to the project.
+Describe the change you would like to see, including any UI behavior, API updates, or developer experience improvements.
 
-## Estimated time to implement the feature
+## Benefits
 
-This is not a fixed deadline, Its just a rough estimate of how long till you submit a pr with the changes. This helps the management team to check back on this issue after the time.
-
-> 999 Years
+Explain how this will improve the project or user experience.
 
 ## Additional context
 
-Add any other context or screenshots about the feature request here.
+Add any context, mockups, links, or supporting examples.
+
+## Notes for contributors
+
+- If you want to work on this, add a comment so maintainers can assign the issue.
+- Please avoid submitting a PR before the issue is approved.
