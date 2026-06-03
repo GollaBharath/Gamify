@@ -1,14 +1,13 @@
 # 🚀 Pull Request
 
-## Description
+## Summary
 
-Provide a clear summary of what this PR does.
-Example: "Added leaderboard feature to show top users in real-time."
+Provide a concise summary of the change.
+Example: "Added leaderboard feature to show top users in real time."
 
 ## Related Issue
 
-Link the issue this PR closes or addresses
-
+Link the issue this PR resolves.
 Example: Closes #42
 
 ## Type of Change
@@ -17,21 +16,27 @@ Example: Closes #42
 - [ ] New feature 🌟
 - [ ] Enhancement ⚡
 - [ ] Documentation update 📚
-- [ ] Refactoring ♻️
+- [ ] Refactor ♻️
 
 ## How Has This Been Tested?
 
-Describe how you tested your changes.
-Example: "Tested locally on client and server; all unit tests passing."
+Describe testing performed locally and any manual QA.
+Example: "Tested client build, verified login flow, and confirmed no console errors."
 
 ## Screenshots (if applicable)
 
-Include screenshots of UI changes, error fixes, or new features
+Include screenshots or screen recordings for UI changes.
+
+## Notes
+
+- Do not open a PR before the issue is assigned.
+- Keep the PR focused on one problem or one feature.
 
 ## Checklist
 
 - [ ] I followed the [Contributing Guide](CONTRIBUTING.md)
-- [ ] My code follows the project’s style guidelines
-- [ ] I performed a self-review of my code
+- [ ] My code follows project style and formatting
+- [ ] I tested the change locally
 - [ ] I updated documentation where necessary
-- [ ] My changes generate no new warnings
+- [ ] My PR contains only related changes
+- [ ] There are no new warnings or errors
