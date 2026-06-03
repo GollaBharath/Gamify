@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
-if (process.env.LOCAL_DEV) {
-  dotenv.config();
-}
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
@@ -21,6 +20,16 @@ import passport from "passport";
 import "./config/passport.js"; // load Google OAuth strategy
 import morgan from "morgan";
 import mongoose from "mongoose"; // For DB status in health check
+
+const requiredEnv = ["MONGO_URI", "JWT_SECRET", "SESSION_SECRET"];
+const missingEnv = requiredEnv.filter((name) => !process.env[name]);
+if (missingEnv.length) {
+  console.error(
+    "❌ Missing required environment variables:",
+    missingEnv.join(", "),
+  );
+  process.exit(1);
+}
 
 // Connect to DB - Only in local/dev mode
 if (process.env.LOCAL_DEV) {
