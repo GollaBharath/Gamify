@@ -2,52 +2,43 @@
 name: Bug report
 about: Create a report to help us improve
 title: "[Bug]: "
-labels: ""
+labels: bug
 assignees: ""
 ---
 
-## Describe the bug
+## Summary
 
-A clear and concise description of what the bug is.
+Describe the bug in a few sentences.
 
-## Steps to Reproduce
+## Steps to reproduce
 
-Steps to reproduce the behavior:
+1. Go to...
+2. Click or interact with...
+3. Observe the unexpected behavior.
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Actual behavior
+
+What happened instead of what you expected.
 
 ## Expected behavior
 
-A clear and concise description of what you expected to happen.
+Describe what should happen when the feature works correctly.
 
-**Screenshots**
+## Reproduction details
 
-If applicable, add screenshots to help explain your problem.
+- OS: [e.g. Windows 11, macOS 14]
+- Browser / environment: [e.g. Chrome 125, Firefox 124, Node 20]
+- Version: [e.g. v1.0.0]
+- Device: [e.g. desktop, mobile]
 
-## Desktop :
+## Screenshots / Logs
 
-> Please complete the following information
+If available, add screenshots, console logs, or API responses.
 
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
+## Additional context
 
-## Smartphone :
+Add any extra details or notes that can help reproduce or fix the issue.
 
-> Please complete the following information
+## Proposed fix (optional)
 
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
-
-## Additional context :
-
-Add any other context about the problem here.
-
-## Suggested Fix :
-
-If you want to fix the bug, you can share how you are planning to do that here.
+If you have an idea for the solution, share it here.
