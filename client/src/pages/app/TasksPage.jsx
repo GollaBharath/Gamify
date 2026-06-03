@@ -104,12 +104,18 @@ const CreateTaskModal = ({ events, onClose, onCreated }) => {
 			onClick={(e) => e.target === e.currentTarget && onClose()}>
 			<motion.div
 				className="modal"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="create-task-title"
 				style={{ maxWidth: 560 }}
 				initial={{ opacity: 0, scale: 0.95 }}
 				animate={{ opacity: 1, scale: 1 }}>
 				<div className="modal-header">
-					<h2 className="modal-title">Create Task</h2>
-					<button className="btn btn-ghost btn-sm" onClick={onClose}>
+					<h2 id="create-task-title" className="modal-title">Create Task</h2>
+					<button
+						className="btn btn-ghost btn-sm"
+						onClick={onClose}
+						aria-label="Close create task dialog">
 						<RiCloseLine />
 					</button>
 				</div>
@@ -310,11 +316,14 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
 			onClick={(e) => e.target === e.currentTarget && onClose()}>
 			<motion.div
 				className="modal"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="submit-task-title"
 				initial={{ opacity: 0, scale: 0.95 }}
 				animate={{ opacity: 1, scale: 1 }}>
 				<div className="modal-header">
 					<div>
-						<h2 className="modal-title">Submit Task</h2>
+						<h2 id="submit-task-title" className="modal-title">Submit Task</h2>
 						<p
 							style={{
 								fontSize: "0.82rem",
@@ -324,7 +333,10 @@ const SubmitTaskModal = ({ task, onClose, onSubmitted }) => {
 							{task.title}
 						</p>
 					</div>
-					<button className="btn btn-ghost btn-sm" onClick={onClose}>
+					<button
+						className="btn btn-ghost btn-sm"
+						onClick={onClose}
+						aria-label="Close submit task dialog">
 						<RiCloseLine />
 					</button>
 				</div>
