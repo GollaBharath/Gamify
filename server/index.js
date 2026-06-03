@@ -93,6 +93,7 @@ app.get("/", (req, res) => {
 	res.json({
 		message: "Gamify API Server",
 		version: "1.0.0",
+		documentation: "Refer to README.md for API usage details",
 		status: "running",
 		endpoints: {
 			health: "/api/health",
@@ -114,6 +115,7 @@ app.get("/api/health", (req, res) => {
 		ok: true,
 		time: new Date().toISOString(),
 		uptime: process.uptime(),
+		environment: process.env.NODE_ENV || "development",
 		db: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
 	});
 });
@@ -130,7 +132,7 @@ app.use("/api/discord", discordRoutes);
 
 // 404 handler
 app.use((req, res) => {
-	res.status(404).json({ success: false, message: "Route not found" });
+	res.status(404).json({ success: false, message: "Requested API route was not found" });
 });
 
 // Improved error handler
