@@ -264,13 +264,13 @@ export const Home = () => {
             ) : (
               <>
                 <Link
-                  to="/register"
+                  to="/auth"
                   className="px-8 py-4 rounded-xl hover:bg-purple-700 transition-all bg-purple-600 font-semibold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/20 text-white"
                 >
                   Get Started Free
                 </Link>
                 <Link
-                  to="/login"
+                  to="/auth"
                   className={`px-8 py-4 rounded-xl transition-all border border-purple-500 font-semibold text-lg flex items-center justify-center gap-2 ${
                     darkMode ? "hover:bg-gray-800" : "hover:bg-purple-50"
                   }`}
@@ -797,7 +797,7 @@ export const Home = () => {
                     </span>
                   </div>
                   <Link
-                    to={user ? "/dashboard" : "/register"}
+                    to={user ? "/dashboard" : "/auth"}
                     className="text-purple-400 hover:text-purple-300 transition flex items-center gap-1"
                   >
                     Try template <FaArrowRight className="text-sm" />
@@ -815,7 +815,7 @@ export const Home = () => {
             className="text-center mt-16"
           >
             <Link
-              to={user ? "/dashboard" : "/register"}
+              to={user ? "/dashboard" : "/auth"}
               className="inline-flex px-8 py-4 rounded-xl hover:bg-purple-700 transition-all bg-purple-600 font-semibold text-lg items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/20 text-white"
             >
               Explore All Templates <FaArrowRight />
@@ -993,7 +993,7 @@ export const Home = () => {
             ) : (
               <>
                 <Link
-                  to="/register"
+                  to="/auth"
                   className="px-8 py-4 rounded-xl hover:bg-purple-700 transition-all bg-purple-600 font-semibold text-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/20 text-white"
                 >
                   Get Started Free

@@ -172,7 +172,7 @@ export function LoginForm() {
           darkMode ? "text-gray-400" : "text-gray-600"
         } transition-colors duration-300`}>
           Don't have an account?{" "}
-          <Link to="/register" className={`${
+          <Link to="/auth" className={`${
             darkMode ? "text-purple-400" : "text-purple-600"
           } hover:underline transition-colors duration-300`}>
             Register
@@ -417,7 +417,7 @@ export function RegisterForm() {
           darkMode ? "text-gray-400" : "text-gray-600"
         } transition-colors duration-300`}>
           Already have an account?{" "}
-          <Link to="/login" className={`${
+          <Link to="/auth" className={`${
             darkMode ? "text-purple-400" : "text-purple-600"
           } hover:underline transition-colors duration-300`}>
             Login
