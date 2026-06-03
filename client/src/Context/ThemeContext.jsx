@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 
 const ThemeContext = createContext();
@@ -18,22 +19,26 @@ export const ThemeProvider = ({ children }) => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setDarkMode(savedTheme === "dark");
+    } else {
+      // Set dark mode as default
+      setDarkMode(true);
     }
   }, []);
 
   useEffect(() => {
     // Update the document class and save preference
+    const html = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add("dark");
+      html.classList.remove("light");
       localStorage.setItem("theme", "dark");
     } else {
-      document.documentElement.classList.remove("dark");
+      html.classList.add("light");
       localStorage.setItem("theme", "light");
     }
   }, [darkMode]);
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    setDarkMode((prev) => !prev);
   };
 
   const value = {
