@@ -12,7 +12,7 @@
 ![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Discord.js](https://img.shields.io/badge/Bot-Discord.js-5865F2?style=for-the-badge&logo=discord&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors-anon/GollaBharath/GollaBharath?style=for-the-badge)
+![Contributors](https://img.shields.io/github/contributors-anon/DeadIndian/Gamify?style=for-the-badge)
 
 ### **🎯 An open-source platform to gamify productivity, collaboration, and community engagement.**
 
@@ -33,39 +33,39 @@
 <table>
 <tr>
 <td align="center">
-<img src="https://img.shields.io/github/stars/gollabharath/gamify?style=social" alt="GitHub Stars">
+<img src="https://img.shields.io/github/stars/DeadIndian/Gamify?style=social" alt="GitHub Stars">
 <br><b>Stars</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/forks/gollabharath/gamify?style=social" alt="GitHub Forks">
+<img src="https://img.shields.io/github/forks/DeadIndian/Gamify?style=social" alt="GitHub Forks">
 <br><b>Forks</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/issues/gollabharath/gamify" alt="GitHub Issues">
+<img src="https://img.shields.io/github/issues/DeadIndian/Gamify" alt="GitHub Issues">
 <br><b>Open Issues</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/issues-closed/gollabharath/gamify" alt="Closed Issues">
+<img src="https://img.shields.io/github/issues-closed/DeadIndian/Gamify" alt="Closed Issues">
 <br><b>Closed Issues</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/issues-pr/gollabharath/gamify" alt="Open PRs">
+<img src="https://img.shields.io/github/issues-pr/DeadIndian/Gamify" alt="Open PRs">
 <br><b>Open PRs</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/issues-pr-closed/gollabharath/gamify" alt="Closed PRs">
+<img src="https://img.shields.io/github/issues-pr-closed/DeadIndian/Gamify" alt="Closed PRs">
 <br><b>Closed PRs</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/contributors/gollabharath/gamify" alt="GitHub Contributors">
+<img src="https://img.shields.io/github/contributors/DeadIndian/Gamify" alt="GitHub Contributors">
 <br><b>Contributors</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/commit-activity/m/gollabharath/gamify" alt="Commits per Month">
+<img src="https://img.shields.io/github/commit-activity/m/DeadIndian/Gamify" alt="Commits per Month">
 <br><b>Commits</b>
 </td>
 <td align="center">
-<img src="https://img.shields.io/github/repo-size/gollabharath/gamify" alt="Repo Size">
+<img src="https://img.shields.io/github/repo-size/DeadIndian/Gamify" alt="Repo Size">
 <br><b>Project Size</b>
 </td>
 </tr>
@@ -237,7 +237,7 @@ server/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gollabharath/gamify.git
+git clone https://github.com/DeadIndian/Gamify.git
 cd gamify
 ```
 
@@ -333,7 +333,7 @@ We are grateful to all the amazing contributors who have helped make this projec
 
 ### 👨‍💻 Meet Our Contributors
 
-[![Contributors](https://contrib.rocks/image?repo=GollaBharath/Gamify)](https://github.com/GollaBharath/Gamify/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=DeadIndian/Gamify)](https://github.com/DeadIndian/Gamify/graphs/contributors)
 
 </div>
 
@@ -345,7 +345,7 @@ This project is licensed under the **MIT License**.
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/gollabharath/gamify/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](https://github.com/DeadIndian/Gamify/blob/main/LICENSE)
 
 </div>
 
