@@ -294,6 +294,12 @@ GUILD_ID=your_guild_id
 API_URL=http://localhost:5000
 ```
 
+#### Example: `client/.env`
+
+```env
+VITE_API_URL=http://localhost:5000
+```
+
 ### 4. Run the App
 
 #### In separate terminals:
