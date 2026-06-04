@@ -325,6 +325,19 @@ cd client && npm run dev
 cd bot && node index.js
 ```
 
+## 🚀 Deployment
+
+Ready to deploy Gamify? We have detailed deployment guides to help you:
+
+| Guide | Description |
+|-------|-------------|
+| [📖 General Deployment Guide](DEPLOYMENT_GUIDE.md) | Step-by-step instructions for deploying the full stack app |
+| [☁️ Cloudflare Deployment Guide](CLOUDFLARE_DEPLOYMENT_README.md) | Guide for deploying on Cloudflare Workers & Pages |
+
+> 💡 New to deployment? Start with the [General Deployment Guide](DEPLOYMENT_GUIDE.md).
+
+---
+
 ---
 
 ## 🤝 Contributing
