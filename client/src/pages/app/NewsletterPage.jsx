@@ -18,8 +18,6 @@ const ADMIN_ORG = ["Admin", "Organisation"];
 export const NewsletterPage = () => {
 	const { user } = useAuth();
 
-	if (!ADMIN_ORG.includes(user?.role)) return <Navigate to="/app" replace />;
-
 	const [count, setCount] = useState(0);
 	const [countLoad, setCountLoad] = useState(true);
 
@@ -45,8 +43,12 @@ export const NewsletterPage = () => {
 	};
 
 	useEffect(() => {
-		loadCount();
-	}, []);
+		if (ADMIN_ORG.includes(user?.role)) {
+			loadCount();
+		}
+	}, [user]);
+
+	if (!ADMIN_ORG.includes(user?.role)) return <Navigate to="/app" replace />;
 
 	const subscribe = async (e) => {
 		e.preventDefault();

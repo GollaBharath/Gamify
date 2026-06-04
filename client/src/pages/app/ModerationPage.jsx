@@ -200,8 +200,6 @@ const ReviewModal = ({ submission, onClose, onDone }) => {
 export const ModerationPage = () => {
 	const { user } = useAuth();
 
-	if (!ELEVATED.includes(user?.role)) return <Navigate to="/app" replace />;
-
 	const [events, setEvents] = useState([]);
 	const [users, setUsers] = useState([]);
 	const [subs, setSubs] = useState([]);
@@ -275,6 +273,8 @@ export const ModerationPage = () => {
 		loadSubs(selTask);
 	}, [selTask]);
 
+	if (!ELEVATED.includes(user?.role)) return <Navigate to="/app" replace />;
+
 	const submitAward = async (e) => {
 		e.preventDefault();
 		if (!awardForm.userId || !awardForm.points || !awardForm.reason) {
@@ -297,7 +297,6 @@ export const ModerationPage = () => {
 		}
 	};
 
-	const pendingSubs = subs.filter((s) => s.status === "pending");
 	const allSubs = subs;
 
 	return (

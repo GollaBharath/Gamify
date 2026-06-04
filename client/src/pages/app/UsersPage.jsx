@@ -41,8 +41,6 @@ const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 export const UsersPage = () => {
 	const { user: me } = useAuth();
 
-	if (!ADMIN_ORG.includes(me?.role)) return <Navigate to="/app" replace />;
-
 	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
@@ -63,8 +61,10 @@ export const UsersPage = () => {
 	};
 
 	useEffect(() => {
-		load();
-	}, []);
+		if (ADMIN_ORG.includes(me?.role)) {
+			load();
+		}
+	}, [me]);
 
 	const visible = useMemo(
 		() =>
@@ -103,6 +103,8 @@ export const UsersPage = () => {
 		});
 		return c;
 	}, [users]);
+
+	if (!ADMIN_ORG.includes(me?.role)) return <Navigate to="/app" replace />;
 
 	return (
 		<div>
