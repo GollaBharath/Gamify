@@ -104,6 +104,22 @@
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Landing Page
+![Landing Page](screenshots/LandingPage.png)
+
+### 🔐 Login Page
+![Login Page](screenshots/LoginPage.png)
+
+### 📊 Dashboard
+![Dashboard](screenshots/Dashboard.png)
+
+### 🔐 Register Page
+![Register Page](screenshots/RegisterPage.png).
+
+---
+
 ## 🚀 Core Features
 
 - 🎯 **Event Creation** — Define your own events, tasks, and currency system
