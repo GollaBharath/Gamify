@@ -4,7 +4,10 @@ import DiscordGuild from "../models/DiscordGuild.js";
 import DiscordUser from "../models/DiscordUser.js";
 import { resolveOrganizationId } from "../services/organizationService.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "changeme-super-secret";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+	throw new Error("FATAL: JWT_SECRET environment variable is not defined!");
+}
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
 const signToken = (id) =>
