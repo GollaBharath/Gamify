@@ -85,6 +85,7 @@
   - [Frontend folder structure](#frontend-folder-structure)
   - [Backend folder structure](#backend-folder-structure)
 - [⚡ Quick Start / Installation](#-quick-start--installation)
+- [📘 API Specification](./docs/API_SPECIFICATION.md)
 - [🤝 Contributing](#-contributing)
 - [🎖️ Contributors](#-contributors)
 - [📄 License](#-license)
