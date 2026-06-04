@@ -60,10 +60,29 @@ app.use(
 	}),
 );
 
+import crypto from "crypto";
+
 app.use(
 	rateLimit({
 		windowMs: 15 * 60 * 1000, // 15 minutes
 		max: 100, // Limit each IP to 100 requests per window
+		handler: (req, res) => {
+			const origin = req.headers.origin;
+			if (origin) {
+				res.setHeader("Access-Control-Allow-Origin", origin);
+				res.setHeader("Access-Control-Allow-Credentials", "true");
+				res.setHeader("Vary", "Origin");
+			}
+
+			const ip = req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+			const hashedIp = ip ? crypto.createHash("sha256").update(ip).digest("hex").slice(0, 16) : "unknown";
+			console.warn(`[Security Warning] Global API limit exceeded for Hashed IP: ${hashedIp} at ${new Date().toISOString()}`);
+
+			res.status(429).json({
+				success: false,
+				message: "Too many requests. Please try again later.",
+			});
+		}
 	}),
 );
 

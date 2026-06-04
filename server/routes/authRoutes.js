@@ -14,15 +14,18 @@ const router = express.Router();
 // Shared rate-limit handler that preserves CORS headers already set by
 // the global cors() middleware and returns a JSON error body.
 const rateLimitHandler = (req, res) => {
-	// CORS headers are set by the global cors() middleware earlier in the
-	// stack, but express-rate-limit may send the response before they are
-	// flushed in some configurations – mirror the origin explicitly here.
 	const origin = req.headers.origin;
 	if (origin) {
 		res.setHeader("Access-Control-Allow-Origin", origin);
 		res.setHeader("Access-Control-Allow-Credentials", "true");
 		res.setHeader("Vary", "Origin");
 	}
+
+	// Create a secure hash of the IP to log anonymously
+	const ip = req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+	const hashedIp = ip ? require("crypto").createHash("sha256").update(ip).digest("hex").slice(0, 16) : "unknown";
+	console.warn(`[Security Warning] Rate limit exceeded for Hashed IP: ${hashedIp} on ${req.method} ${req.originalUrl} at ${new Date().toISOString()}`);
+
 	res.status(429).json({
 		success: false,
 		message: "Too many requests. Please try again later.",
