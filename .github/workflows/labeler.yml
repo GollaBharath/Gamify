@@ -1,0 +1,50 @@
+name: Auto PR Labeler
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Auto Label PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto Labeling
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+
+            const labels = new Set();
+
+            for (const file of files) {
+              if (file.filename.startsWith('client/')) {
+                labels.add('frontend');
+              } else if (file.filename.startsWith('server/')) {
+                labels.add('backend');
+              } else if (file.filename.startsWith('bot/')) {
+                labels.add('bot');
+              } else if (file.filename.startsWith('.github/')) {
+                labels.add('ci-cd');
+              } else if (file.filename.endsWith('.md')) {
+                labels.add('documentation');
+              }
+            }
+
+            if (labels.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: Array.from(labels)
+              });
+              console.log(`Added labels: ${Array.from(labels).join(', ')}`);
+            }
