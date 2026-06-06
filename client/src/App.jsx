@@ -2,6 +2,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import { ThemeProvider } from "./Context/ThemeContext.jsx";
 import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
+import ScrollProgressBar from "./components/ScrollProgressBar.jsx";
 
 import { Landing } from "./pages/Landing.jsx";
 import { AuthPage } from "./pages/AuthPage.jsx";
@@ -21,6 +22,7 @@ export default function App() {
 	return (
 		<ThemeProvider>
 			<AuthProvider>
+				<ScrollProgressBar />
 				<Routes>
 				{/* Public */}
 				<Route path="/" element={<Landing />} />
