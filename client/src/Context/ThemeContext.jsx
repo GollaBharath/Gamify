@@ -12,18 +12,14 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(true);
-
-  useEffect(() => {
-    // Check for saved theme preference or default to dark mode
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setDarkMode(savedTheme === "dark");
-    } else {
-      // Set dark mode as default
-      setDarkMode(true);
+  // Synchronously initialize state from localStorage to prevent layout flash on refresh
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme");
+      return savedTheme ? savedTheme === "dark" : true;
     }
-  }, []);
+    return true;
+  });
 
   useEffect(() => {
     // Update the document class and save preference
