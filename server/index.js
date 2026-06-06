@@ -19,7 +19,8 @@ import session from "express-session";
 import passport from "passport";
 import "./config/passport.js"; // load Google OAuth strategy
 import morgan from "morgan";
-import mongoose from "mongoose"; // For DB status in health check
+import { customSecurityHeaders } from "./middlewares/securityHeaders.js";
+import mongoose from "mongoose";
 
 const requiredEnv = ["MONGO_URI", "JWT_SECRET", "SESSION_SECRET"];
 const missingEnv = requiredEnv.filter((name) => !process.env[name]);
@@ -44,6 +45,7 @@ app.set("trust proxy", 1);
 // Middlewares
 app.use(express.json());
 app.use(helmet()); // Security headers
+app.use(customSecurityHeaders);
 
 // CORS must be registered before rate limiting so that 429 responses
 // still include the Access-Control-Allow-Origin header.
