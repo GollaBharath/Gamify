@@ -18,7 +18,8 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.js"; // load Google OAuth strategy
-import morgan from "morgan";
+import { requestLogger } from "./middlewares/loggerMiddleware.js";
+import { customSecurityHeaders } from "./middlewares/securityHeaders.js";
 import mongoose from "mongoose"; // For DB status in health check
 
 const requiredEnv = ["MONGO_URI", "JWT_SECRET", "SESSION_SECRET"];
@@ -68,7 +69,7 @@ app.use(
 );
 
 // Request logging
-app.use(morgan("dev"));
+app.use(requestLogger);
 
 const isProduction = process.env.NODE_ENV === "production";
 
