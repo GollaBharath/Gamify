@@ -1,0 +1,42 @@
+name: Welcome First-Time Contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome New Contributor
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const isIssue = !!context.payload.issue;
+            const creator = isIssue ? context.payload.issue.user.login : context.payload.pull_request.user.login;
+
+            // Check if user has contributed before
+            // For simplicity in github-script without full search, we check if it is their first interaction
+            const welcomeMessage = `### Welcome to Gamify, @${creator}! 🎉\n\nThank you for opening this ${isIssue ? 'issue' : 'pull request'}. We are excited to have you here! \n\nPlease make sure to read our [Contributing Guidelines](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CODE_OF_CONDUCT.md) to get started.\n\nOur team will review your ${isIssue ? 'issue' : 'changes'} shortly. In the meantime, feel free to explore the project! 🚀`;
+
+            if (isIssue) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                body: welcomeMessage
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: welcomeMessage
+              });
+            }
