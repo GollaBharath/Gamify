@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from "express";
 import cors from "cors";
+import { corsOptions } from "./config/cors.js";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -47,18 +48,7 @@ app.use(helmet()); // Security headers
 
 // CORS must be registered before rate limiting so that 429 responses
 // still include the Access-Control-Allow-Origin header.
-const allowedOrigins = process.env.CORS_ORIGINS?.split(",") || [
-	"http://localhost:5173",
-	"http://localhost:5000",
-	"http://localhost:5001",
-];
-
-app.use(
-	cors({
-		origin: allowedOrigins,
-		credentials: true,
-	}),
-);
+app.use(cors(corsOptions));
 
 app.use(
 	rateLimit({
