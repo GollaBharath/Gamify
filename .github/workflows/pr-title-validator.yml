@@ -1,0 +1,25 @@
+name: PR Title Validator
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  validate:
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Title
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            const regex = /^(feat|fix|docs|style|refactor|test|chore|ci)(\([a-z0-9\-]+\))?:\s.{5,}/;
+            if (!regex.test(title)) {
+              core.setFailed(`PR Title "${title}" does not match Conventional Commits format! e.g., "feat: add user authentication" or "fix: resolve sidebar overflow"`);
+            } else {
+              console.log('PR Title is valid!');
+            }
