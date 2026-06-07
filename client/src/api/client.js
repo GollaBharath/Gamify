@@ -7,6 +7,18 @@ export const api = axios.create({
 	withCredentials: false,
 });
 
+api.interceptors.response.use(
+	(response) => response,
+	(error) => {
+		if (error.response && error.response.status === 401) {
+			console.warn("Session expired. Logging out...");
+			localStorage.removeItem("token");
+			delete api.defaults.headers.common.Authorization;
+		}
+		return Promise.reject(error);
+	}
+);
+
 export const setAuthToken = (token) => {
 	if (token) {
 		api.defaults.headers.common.Authorization = `Bearer ${token}`;
