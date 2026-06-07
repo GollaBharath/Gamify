@@ -1,56 +1,61 @@
-import { Route, Routes, Navigate } from "react-router-dom";
-import { AuthProvider } from "./Context/AuthContext.jsx";
-import { ThemeProvider } from "./Context/ThemeContext.jsx";
-import { ProtectedRoute } from "./routes/ProtectedRoute.jsx";
+// client/src/App.jsx
+import React, { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { Landing } from "./pages/Landing.jsx";
-import { AuthPage } from "./pages/AuthPage.jsx";
-import { AppLayout } from "./pages/app/AppLayout.jsx";
-import { DashboardHome } from "./pages/app/DashboardHome.jsx";
-import { EventsPage } from "./pages/app/EventsPage.jsx";
-import { TasksPage } from "./pages/app/TasksPage.jsx";
-import { ShopPage } from "./pages/app/ShopPage.jsx";
-import { LeaderboardPage } from "./pages/app/LeaderboardPage.jsx";
-import { PointsPage } from "./pages/app/PointsPage.jsx";
-import { ProfilePage } from "./pages/app/ProfilePage.jsx";
-import { ModerationPage } from "./pages/app/ModerationPage.jsx";
-import { UsersPage } from "./pages/app/UsersPage.jsx";
-import { NewsletterPage } from "./pages/app/NewsletterPage.jsx";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+import Home from "./components/Home";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import { AuthProvider } from "./Context/AuthContext";
+import LoadingSpinner from "./components/LoadingSpinner";
 
-export default function App() {
-	return (
-		<ThemeProvider>
-			<AuthProvider>
-				<Routes>
-				{/* Public */}
-				<Route path="/" element={<Landing />} />
-				<Route path="/auth" element={<AuthPage />} />
+// ✅ Lazy-loaded route components
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile   = lazy(() => import("./pages/Profile"));
+const AuthForms = lazy(() => import("./pages/AuthForms"));
+const About     = lazy(() => import("./pages/About"));
+const Contact   = lazy(() => import("./pages/Contact"));
 
-				{/* Legacy redirect: /dashboard → /app */}
-				<Route path="/dashboard" element={<Navigate to="/app" replace />} />
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <Navbar />
 
-				{/* Protected App */}
-				<Route element={<ProtectedRoute />}>
-					<Route path="/app" element={<AppLayout />}>
-						<Route index element={<DashboardHome />} />
-						<Route path="events" element={<EventsPage />} />
-						<Route path="tasks" element={<TasksPage />} />
-						<Route path="shop" element={<ShopPage />} />
-						<Route path="leaderboard" element={<LeaderboardPage />} />
-						<Route path="points" element={<PointsPage />} />
-						<Route path="profile" element={<ProfilePage />} />
-						{/* Moderator+ */}
-						<Route path="moderation" element={<ModerationPage />} />
-						{/* Admin / Organisation */}
-						<Route path="users" element={<UsersPage />} />
-						<Route path="newsletter" element={<NewsletterPage />} />
-					</Route>
-				</Route>
+        {/* ✅ Wrap all Routes in Suspense with fallback */}
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/"        element={<Home />} />
+            <Route path="/login"   element={<AuthForms />} />
+            <Route path="/about"   element={<About />} />
+            <Route path="/contact" element={<Contact />} />
 
-				{/* 404 fallback */}
-				<Route path="*" element={<Navigate to="/" replace />} />
-			</Routes>
-			</AuthProvider>
-		</ThemeProvider>
-	);
+            {/* Protected routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Suspense>
+
+        <Footer />
+      </Router>
+    </AuthProvider>
+  );
 }
+
+export default App;
