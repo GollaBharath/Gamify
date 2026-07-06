@@ -116,7 +116,7 @@
 ![Dashboard](screenshots/Dashboard.png)
 
 ### 🔐 Register Page
-![Register Page](screenshots/RegisterPage.png).
+![Register Page](screenshots/RegisterPage.png)
 
 ---
 
@@ -140,7 +140,7 @@
   </text>
 </svg>
 
-<image src="https://github.com/user-attachments/assets/2697ede8-aa67-4b57-b913-edf6de969249">
+<img src="https://github.com/user-attachments/assets/2697ede8-aa67-4b57-b913-edf6de969249" alt="Event Banner" />
 
 <br>
 
